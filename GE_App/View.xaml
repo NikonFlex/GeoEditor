@@ -1,0 +1,62 @@
+﻿<Window x:Class="GeoEditor.View"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:uc="clr-namespace:GeoEditor.Control"
+        xmlns:local="clr-namespace:GeoEditor"
+        mc:Ignorable="d"
+        Title="GeoEditor" 
+        Width="1000"
+        Height="1000"
+        WindowState="Maximized">
+    <Grid x:Name="PanelsGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="3"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+        <uc:Desk
+            x:Name="DrawPlaceControl" 
+            Focusable="True"
+            Grid.Column="0"
+            Grid.Row="1"
+            Grid.RowSpan="6"/>
+        <Button 
+            x:Name="AddSegmentTool" 
+            Grid.Row="1" 
+            Grid.Column="2" 
+            Click="addSegmentToolButtonClick" 
+            Content="AddSegment"/>
+        <Button 
+            x:Name="SelectObjectsTool" 
+            Grid.Row="2" 
+            Grid.Column="2" 
+            Click="selectObjectsToolButtonClick" 
+            Content="Default"/>
+        <Button 
+            x:Name="DeleteCommand" 
+            Grid.Row="3" 
+            Grid.Column="2" 
+            Click="deleteCommandButtonClick" 
+            Content="Delete"/>
+        <GridSplitter 
+            x:Name="VerticalSplitter"
+            Grid.Row="1" 
+            Grid.Column="1" 
+            Grid.RowSpan="3" 
+            Width="3" 
+            VerticalAlignment="Stretch" 
+            HorizontalAlignment="Center" 
+            Background="LightGray"/>
+        <Menu
+            x:Name="Menu"
+            Grid.ColumnSpan="3"/>
+    </Grid>
+</Window>

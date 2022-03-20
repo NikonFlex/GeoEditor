@@ -48,3 +48,7 @@ Thumbs.db
 *.mov
 *.wmv
 
+/GE_App/bin
+/GE_App/obj
+/.vs
+/GE_App/*.user
