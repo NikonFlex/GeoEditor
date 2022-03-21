@@ -3,7 +3,7 @@
    [Command]
    class DeleteCommand : BaseCommand
    {
-      public override CommandID GetID() => CommandID.Delete;
+      public override CommandID ID => CommandID.Delete;
 
       public override void DoCommand()
       {

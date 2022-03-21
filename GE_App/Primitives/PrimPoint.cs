@@ -1,6 +1,6 @@
 ﻿namespace GE_Primitive
 {
-   class PrimPoint
+   class PrimPoint : System.ICloneable
    {
       public double X { get; set; }
       public double Y { get; set; }
@@ -34,9 +34,11 @@
          return new(point1.X + point2.X, point1.Y + point2.Y);
       }
 
-      public static PrimPoint operator -(PrimPoint point1, PrimPoint point2)
+      public static PrimPoint operator - (PrimPoint point1, PrimPoint point2)
       {
          return new(point1.X - point2.X, point1.Y - point2.Y);
       }
+
+      public object Clone() => MemberwiseClone();
    }
 }

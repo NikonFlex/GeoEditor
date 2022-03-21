@@ -16,6 +16,7 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -46,11 +47,17 @@
             Grid.Column="2" 
             Click="deleteCommandButtonClick" 
             Content="Delete"/>
+        <Button 
+            x:Name="ZoomALlCommand" 
+            Grid.Row="4" 
+            Grid.Column="2" 
+            Click="zoomAllCommandButtonClick" 
+            Content="ZoomAll"/>
         <GridSplitter 
             x:Name="VerticalSplitter"
             Grid.Row="1" 
             Grid.Column="1" 
-            Grid.RowSpan="3" 
+            Grid.RowSpan="4" 
             Width="3" 
             VerticalAlignment="Stretch" 
             HorizontalAlignment="Center" 

@@ -42,9 +42,9 @@ namespace GeoEditor
       {
          foreach (GE_Tool.BaseTool tool in _tools)
          {
-            if (tool.IsActive() && tool.GetID() != activeToolID)
+            if (tool.IsActive&& tool.ID != activeToolID)
                tool.DeActivate();
-            else if (tool.GetID() == activeToolID && !tool.IsActive())
+            else if (tool.ID == activeToolID && !tool.IsActive)
                tool.Activate();
          }
       }
@@ -53,7 +53,7 @@ namespace GeoEditor
       {
          foreach (GE_Command.BaseCommand command in _commands)
          {
-            if (command.GetID() == commandID)
+            if (command.ID == commandID)
                command.DoCommand();
          }
       }
@@ -86,6 +86,11 @@ namespace GeoEditor
       private void deleteCommandButtonClick(object sender, RoutedEventArgs e)
       {
          doCommand(GE_Command.CommandID.Delete);
+      }
+
+      private void zoomAllCommandButtonClick(object sender, RoutedEventArgs e)
+      {
+         doCommand(GE_Command.CommandID.ZoomAll);
       }
    }
 }

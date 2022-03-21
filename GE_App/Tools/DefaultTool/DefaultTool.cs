@@ -5,7 +5,7 @@ namespace GE_Tool
    [Tool]
    class DefaultTool : BaseTool
    {
-      public override ToolID GetID() => ToolID.Select;
+      public override ToolID ID => ToolID.Select;
       private DefaultToolMode _activeMode = null;
 
       public override void MouseMove(MouseEventArgs e)

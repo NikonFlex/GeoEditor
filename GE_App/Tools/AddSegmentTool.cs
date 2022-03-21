@@ -10,7 +10,7 @@ namespace GE_Tool
       private bool _isFirstPointSet = false;
       private bool _isShiftPressed = false;
 
-      public override ToolID GetID() => ToolID.AddSegment;
+      public override ToolID ID => ToolID.AddSegment;
 
       public override void MouseMove(MouseEventArgs e)
       {

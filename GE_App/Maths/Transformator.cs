@@ -15,6 +15,16 @@
          Pivot = new();
       }
 
+      public void SetTransformatorFromBoundRect(BoundRect bRect)
+      {
+         if (bRect.IsEmpty)
+            return;
+         double scaleW = bRect.Width / (ScreenWidth - 2 * 20);
+         double scaleH = bRect.Height / (ScreenHeight - 2 * 20);
+         Pivot = ScreenToWorld(bRect.Center);
+         Scale = System.MathF.Max((float)scaleW, (float)scaleH);
+      }
+
       public GE_Primitive.PrimPoint ScreenToWorld(GE_Primitive.PrimPoint screenPoint)
       {
          double globalX = Pivot.X + (screenPoint.X - ScreenWidth / 2.0f) * Scale;

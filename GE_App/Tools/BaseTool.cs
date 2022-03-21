@@ -38,8 +38,9 @@ namespace GE_Tool
 
       protected bool _isActive;
 
-      public abstract ToolID GetID();
-      public bool IsActive() => _isActive;
+      public abstract ToolID ID { get; }
+
+      public bool IsActive => _isActive;
       public void Activate() => _isActive = true;
       public void DeActivate() => _isActive = false;
 
