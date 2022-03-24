@@ -58,8 +58,7 @@ namespace GE_Tool
 
       private void finish()
       {
-         GE_Model.Model.Instance.AddSegment(GE_ViewModel.DeskViewModel.Instance.Transformator.ScreenToWorld(_curSegment.Points[0]),
-                                            GE_ViewModel.DeskViewModel.Instance.Transformator.ScreenToWorld(_curSegment.Points[1]));
+         GE_ViewModel.DeskViewModel.Instance.AddSegment(_curSegment.Points[0], _curSegment.Points[1]);
          _isFirstPointSet = false;
          _curSegment = new();
          GE_ViewModel.DeskViewModel.Instance.SetPhantomGeometry(_curSegment);

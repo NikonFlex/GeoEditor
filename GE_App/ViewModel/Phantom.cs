@@ -17,7 +17,7 @@
       public void Draw(System.Windows.Controls.Canvas screen)
       {
          for (int i = 0; i < Primitive.Points.Count - 1; i++)
-            screen.Children.Add(GeoEditor.Utils.createSegmentLine(Primitive.Points[i], Primitive.Points[i + 1], System.Windows.Media.Brushes.Orange));
+            screen.Children.Add(GeoEditor.Utils.createSegmentLine(Primitive.Points[i], Primitive.Points[i + 1], 1, System.Windows.Media.Brushes.LightGray));
       }
    }
 }

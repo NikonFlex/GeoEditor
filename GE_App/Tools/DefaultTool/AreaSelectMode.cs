@@ -50,22 +50,19 @@ namespace GE_Tool
 
       private void reSelectObjects()
       {
-         int counter = 0;
-         foreach (GE_GeomObject.BaseObject obj in GE_Model.Model.Instance.Objects.ObjectsReadOnly)
+         foreach (GE_VM_Object.VM_BaseObject obj in DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
          {
-            if (obj is GE_GeomObject.Segment seg)
-               selectSegment(seg, counter);
-
-            counter++;
+            if (obj is GE_VM_Object.VM_Segment segment)
+               selectSegment(segment);
          }
       }
 
-      private void selectSegment(GE_GeomObject.Segment seg, int objectI)
+      private void selectSegment(GE_VM_Object.VM_Segment segment)
       {
-         if (DeskViewModel.Instance.SelectArea.IsSegmentInside(seg))
-            DeskViewModel.Instance.SelectObjectAt(objectI);
+         if (DeskViewModel.Instance.SelectArea.IsSegmentInside(segment))
+            segment.Select();
          else if (!IsCtrlPressed)
-            DeskViewModel.Instance.DeSelectObjectAt(objectI);
+            segment.DeSelect();
       }
    }
 }

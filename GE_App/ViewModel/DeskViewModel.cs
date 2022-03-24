@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace GE_ViewModel
 {
@@ -7,8 +8,7 @@ namespace GE_ViewModel
       private static DeskViewModel _instance = new();
       private static GE_Maths.Transformator _transformator;
       private System.Windows.Controls.Canvas _screen;
-
-      private List<int> _selectedObjectsI = new();
+      private GeoEditor.GE_VM_ObjectsCollection _objectsViews = new();
       
       private Phantom _phantom = new();
       private SelectArea _selectArea = new();
@@ -20,6 +20,7 @@ namespace GE_ViewModel
       public static DeskViewModel Instance => _instance;
       public System.Windows.Controls.Canvas Screen => _screen;
       public GE_Maths.Transformator Transformator => _transformator;
+      public GeoEditor.GE_VM_ObjectsCollection ObjectsViews => _objectsViews;
       public SelectArea SelectArea
       {
          get => _selectArea;
@@ -65,46 +66,25 @@ namespace GE_ViewModel
          _screen.Children.Clear();
 
          drawCenter();
-         int counter = 0;
-         foreach (GE_GeomObject.BaseObject obj in GE_Model.Model.Instance.Objects.ObjectsReadOnly)
-         {
-            if (obj is GE_GeomObject.Segment seg)
-               _screen.Children.Add(getView(seg, _selectedObjectsI.Contains(counter)));
-            counter++;
-         }
+         foreach (GE_VM_Object.VM_BaseObject view in _objectsViews.ObjectsReadOnly)
+            view.Draw(_screen);
       }
 
-      public void SelectObjectAt(int index)
+      public void AddSegment(GE_Primitive.PrimPoint p1, GE_Primitive.PrimPoint p2)
       {
-         if (_selectedObjectsI.Contains(index) == false)
-            _selectedObjectsI.Add(index);
-      }
-
-      public void DeSelectObjectAt(int index)
-      {
-         _selectedObjectsI.Remove(index);
-      }
-
-      public bool IsObjectSelectedAt(int index)
-      {
-         return _selectedObjectsI.Contains(index);
-      }
-
-      private static System.Windows.Shapes.Line getView(GE_GeomObject.Segment segment, bool selected)
-      {
-         return GeoEditor.Utils.createSegmentLine(_transformator.WorldToScreen(segment.P1),
-                                                  _transformator.WorldToScreen(segment.P2),
-                                                  selected ? System.Windows.Media.Brushes.DarkViolet : System.Windows.Media.Brushes.Black);
+         int objID = GE_Model.Model.Instance.AddSegment(_transformator.ScreenToWorld(p1), _transformator.ScreenToWorld(p2));
+         _objectsViews.AddObject(new GE_VM_Object.VM_Segment(objID));
+         RefreshView();
       }
 
       private void drawCenter()
       {
          GE_Primitive.PrimPoint worldCenter = _transformator.WorldToScreen(new GE_Primitive.PrimPoint(0, 0));
          _screen.Children.Add(GeoEditor.Utils.createSegmentLine(new(worldCenter.X - 5, worldCenter.Y), 
-                                                                new(worldCenter.X + 5, worldCenter.Y), System.Windows.Media.Brushes.Black));
+                                                                new(worldCenter.X + 5, worldCenter.Y), 1, System.Windows.Media.Brushes.Black));
 
          _screen.Children.Add(GeoEditor.Utils.createSegmentLine(new(worldCenter.X, worldCenter.Y - 5),
-                                                                new(worldCenter.X, worldCenter.Y + 5), System.Windows.Media.Brushes.Black));
+                                                                new(worldCenter.X, worldCenter.Y + 5), 1, System.Windows.Media.Brushes.Black));
 
       }
    }

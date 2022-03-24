@@ -29,16 +29,16 @@ namespace GE_ViewModel
       {
          //left
          screen.Children.Add(GeoEditor.Utils.createSegmentLine(new PrimPoint(_rect.Left, _rect.Top), 
-                                                               new PrimPoint(_rect.Left, _rect.Bottom), Brushes.DarkOrange));
+                                                               new PrimPoint(_rect.Left, _rect.Bottom), 1, Brushes.RoyalBlue));
          //right
          screen.Children.Add(GeoEditor.Utils.createSegmentLine(new PrimPoint(_rect.Right, _rect.Top),
-                                                               new PrimPoint(_rect.Right, _rect.Bottom), Brushes.DarkOrange));
+                                                               new PrimPoint(_rect.Right, _rect.Bottom), 1, Brushes.RoyalBlue));
          //top
          screen.Children.Add(GeoEditor.Utils.createSegmentLine(new PrimPoint(_rect.Left, _rect.Top),
-                                                               new PrimPoint(_rect.Right, _rect.Top), Brushes.DarkOrange));
+                                                               new PrimPoint(_rect.Right, _rect.Top), 1, Brushes.RoyalBlue));
          //bottom
          screen.Children.Add(GeoEditor.Utils.createSegmentLine(new PrimPoint(_rect.Left, _rect.Bottom),
-                                                               new PrimPoint(_rect.Right, _rect.Bottom), Brushes.DarkOrange));
+                                                               new PrimPoint(_rect.Right, _rect.Bottom), 1, Brushes.RoyalBlue));
       }
 
       private bool isPointInside(PrimPoint point)
@@ -46,10 +46,10 @@ namespace GE_ViewModel
          return _rect.Left <= point.X && point.X <= _rect.Right && _rect.Top <= point.Y && point.Y <= _rect.Bottom;
       }
 
-      public bool IsSegmentInside(GE_GeomObject.Segment segment)
+      public bool IsSegmentInside(GE_VM_Object.VM_Segment VMsegment)
       {
-         return isPointInside(DeskViewModel.Instance.Transformator.WorldToScreen(segment.P1)) && 
-                isPointInside(DeskViewModel.Instance.Transformator.WorldToScreen(segment.P2));
+         return isPointInside(DeskViewModel.Instance.Transformator.WorldToScreen(VMsegment.Segment.P1)) && 
+                isPointInside(DeskViewModel.Instance.Transformator.WorldToScreen(VMsegment.Segment.P2));
       }
    }
 }

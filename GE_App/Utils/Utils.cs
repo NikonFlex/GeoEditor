@@ -10,20 +10,39 @@ namespace GeoEditor
       private List<GE_GeomObject.BaseObject> _objects = new();
 
       public IReadOnlyCollection<GE_GeomObject.BaseObject> ObjectsReadOnly => _objects;
+
       public int AddObject(GE_GeomObject.BaseObject newObject)
       {
          _objects.Add(newObject);
-         return _objects.Count - 1;
+         return newObject.ID;
       }
-      public void RemoveObject(int index)
+      public void RemoveObjectWithID(int id)
       {
-         _objects.RemoveAt(index);
+         _objects.RemoveAll(obj => obj.ID == id);
+      }
+   }
+
+   class GE_VM_ObjectsCollection
+   {
+      private List<GE_VM_Object.VM_BaseObject> _objects = new();
+
+      public IReadOnlyCollection<GE_VM_Object.VM_BaseObject> ObjectsReadOnly => _objects;
+
+      public int AddObject(GE_VM_Object.VM_BaseObject newObject) // return id
+      {
+         _objects.Add(newObject);
+         return newObject.ModelID;
+      }
+      public void RemoveObjectWithID(int id)
+      {
+         GE_Model.Model.Instance.RemoveObjectWithID(id);
+         _objects.RemoveAll(view => view.ModelID == id);
       }
    }
 
    static class Utils
    {
-      public static Line createSegmentLine(GE_Primitive.PrimPoint p1, GE_Primitive.PrimPoint p2, SolidColorBrush brush)
+      public static Line createSegmentLine(GE_Primitive.PrimPoint p1, GE_Primitive.PrimPoint p2, double thickness, SolidColorBrush brush)
       {
          Line newLine = new Line();
          newLine.X1 = p1.X;
@@ -31,7 +50,7 @@ namespace GeoEditor
          newLine.X2 = p2.X;
          newLine.Y2 = p2.Y;
          newLine.Stroke = brush;
-         newLine.StrokeThickness = 1.5;
+         newLine.StrokeThickness = thickness;
          newLine.IsHitTestVisible = false;
          return newLine;
       }
