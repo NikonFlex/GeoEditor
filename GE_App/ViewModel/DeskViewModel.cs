@@ -7,13 +7,13 @@ namespace GE_ViewModel
    {
       private static DeskViewModel _instance = new();
       private static GE_Maths.Transformator _transformator;
-      private System.Windows.Controls.Canvas _screen;
       private GeoEditor.GE_VM_ObjectsCollection _objectsViews = new();
+      private System.Windows.Controls.Canvas _screen;
       
-      private Phantom _phantom = new();
       private SelectArea _selectArea = new();
-      private int _phantomIOnScene;
+      private Phantom _phantom = new();
       private int _selectAreaIOnScene;
+      private int _phantomIOnScene;
       
       private DeskViewModel() { }
 

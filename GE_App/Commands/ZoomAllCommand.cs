@@ -1,4 +1,6 @@
-﻿namespace GE_Command
+﻿using System.Linq;
+
+namespace GE_Command
 {
    [Command]
    class ZoomAllCommand : BaseCommand
@@ -8,12 +10,18 @@
       public override void DoCommand()
       {
          GE_Maths.BoundRect bRect = new();
-         foreach (GE_GeomObject.BaseObject obj in GE_Model.Model.Instance.Objects.ObjectsReadOnly)
+
+         bool _zoomOnSelected = GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly.Any(obj => obj.IsSelected);
+
+         foreach (GE_VM_Object.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
          {
-            if (obj is GE_GeomObject.Segment seg)
+            if (_zoomOnSelected && !obj.IsSelected)
+               continue;
+
+            if (obj is GE_VM_Object.VM_Segment segment)
             {
-               bRect.AddPoint(GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(seg.P1));
-               bRect.AddPoint(GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(seg.P2));
+               bRect.AddPoint(segment.Segment.P1);
+               bRect.AddPoint(segment.Segment.P2);
             }
          }
 

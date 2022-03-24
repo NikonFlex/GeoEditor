@@ -19,9 +19,11 @@
       {
          if (bRect.IsEmpty)
             return;
-         double scaleW = bRect.Width / (ScreenWidth - 2 * 20);
-         double scaleH = bRect.Height / (ScreenHeight - 2 * 20);
-         Pivot = ScreenToWorld(bRect.Center);
+
+         Pivot = bRect.Center;
+         int borderShift = 20;
+         double scaleW = bRect.Width / (ScreenWidth - borderShift * 2);
+         double scaleH = bRect.Height / (ScreenHeight - borderShift * 2);
          Scale = System.MathF.Max((float)scaleW, (float)scaleH);
       }
 
