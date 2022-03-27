@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using System.Diagnostics;
 using GE_Primitive;
 using GE_ViewModel;
 
@@ -6,6 +7,13 @@ namespace GE_Tool
 {
    class PickSelectMode : DefaultToolMode
    {
+      private double _maxDistToSeg = 2.5;
+
+      public override void OnMouseMove(MouseEventArgs e)
+      {
+         reHoverObjects(PrimPoint.FromWindowsPoint(e.GetPosition(DeskViewModel.Instance.Screen)));
+      }
+
       public override void OnMouseUp(MouseButtonEventArgs e)
       {
          if (e.ChangedButton != MouseButton.Right)
@@ -15,30 +23,35 @@ namespace GE_Tool
 
       private void reSelectObjects(PrimPoint point)
       {
-         foreach (GE_VM_Object.VM_BaseObject obj in DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
+         foreach (GE_VMObject.VM_BaseObject obj in DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
          {
-            if (obj is GE_VM_Object.VM_Segment segment)
-               selectSegment(point, segment);
-
+            if (obj.DistTo(point) <= _maxDistToSeg)
+            {
+               DeskViewModel.Instance.SelectedObjects.SelectObject(obj.ModelID);
+               obj.SetState(GE_VMObject.VMObjectState.Selected);  
+            }
+            else if (!IsCtrlPressed)
+            {
+               DeskViewModel.Instance.SelectedObjects.DeSelectObject(obj.ModelID);
+               obj.SetState(GE_VMObject.VMObjectState.None);
+            }
          }
-
-         DeskViewModel.Instance.RefreshView();
       }
 
-      private void selectSegment(PrimPoint point, GE_VM_Object.VM_Segment segment)
+      private void reHoverObjects(PrimPoint point)
       {
-         double distToSeg = GE_Maths.GE_Math.PointToSegmentDist(point, DeskViewModel.Instance.Transformator.WorldToScreen(segment.Segment.P1),
-                                                                       DeskViewModel.Instance.Transformator.WorldToScreen(segment.Segment.P2));
-         if (distToSeg < 5)
+         foreach (GE_VMObject.VM_BaseObject obj in DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
          {
-            if (segment.IsSelected)
-               segment.DeSelect();
+            if (DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID))
+               continue;
+
+            if (obj.DistTo(point) <= _maxDistToSeg)
+            {
+               obj.SetState(GE_VMObject.VMObjectState.Hovered);
+               Trace.WriteLine("obj " + $"{ obj.ModelID }" + "hovered");
+            }
             else
-               segment.Select();
-         }
-         else if (!IsCtrlPressed)
-         {
-            segment.DeSelect();
+               obj.SetState(GE_VMObject.VMObjectState.None);
          }
       }
    }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-namespace GE_Primitive
+﻿namespace GE_Primitive
 {
    class PrimRect
    {

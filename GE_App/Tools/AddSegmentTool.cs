@@ -17,8 +17,7 @@ namespace GE_Tool
          if (_isFirstPointSet)
          {
             _curSegment.Points[1] = calcSecondPoint(PrimPoint.FromWindowsPoint(e.GetPosition(GE_ViewModel.DeskViewModel.Instance.Screen)));
-            GE_ViewModel.DeskViewModel.Instance.SetPhantomGeometry(_curSegment);
-            GE_ViewModel.DeskViewModel.Instance.RefreshPhantom();
+            GE_ViewModel.DeskViewModel.Instance.Phantom.SetGeometry(_curSegment);
          }
       }
 
@@ -51,8 +50,7 @@ namespace GE_Tool
          _curSegment = new();
          _curSegment.AddPoint(screenEventPos);
          _curSegment.AddPoint(screenEventPos);
-         GE_ViewModel.DeskViewModel.Instance.SetPhantomGeometry(_curSegment);
-         GE_ViewModel.DeskViewModel.Instance.RefreshPhantom(true);
+         GE_ViewModel.DeskViewModel.Instance.Phantom.SetGeometry(_curSegment);
          _isFirstPointSet = true;
       }
 
@@ -61,16 +59,14 @@ namespace GE_Tool
          GE_ViewModel.DeskViewModel.Instance.AddSegment(_curSegment.Points[0], _curSegment.Points[1]);
          _isFirstPointSet = false;
          _curSegment = new();
-         GE_ViewModel.DeskViewModel.Instance.SetPhantomGeometry(_curSegment);
-         GE_ViewModel.DeskViewModel.Instance.RefreshView();
+         GE_ViewModel.DeskViewModel.Instance.Phantom.SetGeometry(_curSegment);
       }
 
       private void emergencyFinish()
       {
          _isFirstPointSet = false;
          _curSegment = new();
-         GE_ViewModel.DeskViewModel.Instance.SetPhantomGeometry(_curSegment);
-         GE_ViewModel.DeskViewModel.Instance.RefreshView();
+         GE_ViewModel.DeskViewModel.Instance.Phantom.SetGeometry(_curSegment);
       }
 
       private PrimPoint calcSecondPoint(PrimPoint eventPos)

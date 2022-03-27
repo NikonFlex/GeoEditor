@@ -2,22 +2,34 @@
 {
    class Phantom
    {
-      public GE_Primitive.PrimPolyline Primitive { get; set; }
+      private GE_Primitive.PrimPolyline _primitive;
+      private System.Windows.UIElement _phantomUI;
 
       public Phantom()
       {
-         Primitive = new();
+         _primitive = new();
+      }
+
+      public void SetGeometry(GE_Primitive.PrimPolyline newGeometry)
+      {
+         _primitive = newGeometry;
+
+         System.Windows.Shapes.Polyline polyline = _phantomUI as System.Windows.Shapes.Polyline;
+         polyline.Points.Clear();
+
+         foreach (GE_Primitive.PrimPoint point in _primitive.Points)
+            polyline.Points.Add(new System.Windows.Point(point.X, point.Y));
       }
 
       public void Clear()
       {
-         Primitive = new();
+         _primitive = new();
       }
 
-      public void Draw(System.Windows.Controls.Canvas screen)
+      public System.Windows.UIElement CreateView()
       {
-         for (int i = 0; i < Primitive.Points.Count - 1; i++)
-            screen.Children.Add(GeoEditor.Utils.createSegmentLine(Primitive.Points[i], Primitive.Points[i + 1], 1, System.Windows.Media.Brushes.LightGray));
+
+         return _phantomUI = GeoEditor.Utils.CreatePolyline(_primitive.Points, 1, System.Windows.Media.Brushes.LightGray);
       }
    }
 }

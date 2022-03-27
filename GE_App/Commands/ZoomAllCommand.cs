@@ -11,18 +11,15 @@ namespace GE_Command
       {
          GE_Maths.BoundRect bRect = new();
 
-         bool _zoomOnSelected = GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly.Any(obj => obj.IsSelected);
+         bool _zoomOnSelected = GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly.Any
+                                 (obj => GE_ViewModel.DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID));
 
-         foreach (GE_VM_Object.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
+         foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
          {
-            if (_zoomOnSelected && !obj.IsSelected)
+            if (_zoomOnSelected && !GE_ViewModel.DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID))
                continue;
 
-            if (obj is GE_VM_Object.VM_Segment segment)
-            {
-               bRect.AddPoint(segment.Segment.P1);
-               bRect.AddPoint(segment.Segment.P2);
-            }
+            obj.GetAllWorldPoints().ForEach(point => bRect.AddPoint(point));
          }
 
          GE_ViewModel.DeskViewModel.Instance.Transformator.SetTransformatorFromBoundRect(bRect);

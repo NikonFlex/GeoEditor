@@ -2,7 +2,7 @@
 {
    abstract class BaseObject
    {
-      protected string _color; //hex code
+      protected string _color = "#000000"; //hex code
       protected int _id;
 
       public int ID => _id;

@@ -63,24 +63,14 @@ namespace GeoEditor
          activateTool(GE_Tool.ToolID.AddSegment);
       }
 
-      private void addLineToolButtonClick(object sender, RoutedEventArgs e)
-      {
-         activateTool(GE_Tool.ToolID.AddLine);
-      }
-
-      private void addCircleToolButtonClick(object sender, RoutedEventArgs e)
-      {
-         activateTool(GE_Tool.ToolID.AddCircle);
-      }
-
-      private void addRayToolButtonClick(object sender, RoutedEventArgs e)
-      {
-         activateTool(GE_Tool.ToolID.AddRay);
-      }
-
-      private void selectObjectsToolButtonClick(object sender, RoutedEventArgs e)
+      private void defaultToolButtonClick(object sender, RoutedEventArgs e)
       {
          activateTool(GE_Tool.ToolID.Select);
+      }
+
+      private void moveToolButtonClick(object sender, RoutedEventArgs e)
+      {
+         activateTool(GE_Tool.ToolID.Move);
       }
 
       private void deleteCommandButtonClick(object sender, RoutedEventArgs e)
@@ -92,5 +82,6 @@ namespace GeoEditor
       {
          doCommand(GE_Command.CommandID.ZoomAll);
       }
+
    }
 }

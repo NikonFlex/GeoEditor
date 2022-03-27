@@ -9,9 +9,7 @@ namespace GE_Tool
    {
       Select,
       AddSegment,
-      AddLine,
-      AddCircle,
-      AddRay
+      Move
    }
 
    abstract class BaseTool

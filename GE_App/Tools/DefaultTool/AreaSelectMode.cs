@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using GE_Primitive;
 using GE_ViewModel;
+using System.Linq;
 
 namespace GE_Tool
 {
@@ -13,7 +14,7 @@ namespace GE_Tool
          if (_isOriginPointSet)
          {
             DeskViewModel.Instance.SelectArea.SetSecondPoint(PrimPoint.FromWindowsPoint(e.GetPosition(DeskViewModel.Instance.Screen)));
-            DeskViewModel.Instance.RefreshSelectArea();
+            reHoverObjects();
          }
       }
 
@@ -35,8 +36,7 @@ namespace GE_Tool
 
       private void start(PrimPoint screenEventPos)
       {
-         DeskViewModel.Instance.SetSelectAreaGeometry(screenEventPos, screenEventPos);
-         DeskViewModel.Instance.RefreshSelectArea(true);
+         DeskViewModel.Instance.SelectArea.SetControlPoint(screenEventPos);
          _isOriginPointSet = true;
       }
 
@@ -44,25 +44,41 @@ namespace GE_Tool
       {
          reSelectObjects();
          _isOriginPointSet = false;
-         DeskViewModel.Instance.SetSelectAreaGeometry(new(), new());
-         DeskViewModel.Instance.RefreshView();
+         DeskViewModel.Instance.SelectArea.Clear();
       }
 
       private void reSelectObjects()
       {
-         foreach (GE_VM_Object.VM_BaseObject obj in DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
+         foreach (GE_VMObject.VM_BaseObject obj in DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
          {
-            if (obj is GE_VM_Object.VM_Segment segment)
-               selectSegment(segment);
+            if (DeskViewModel.Instance.SelectArea.IsInside(obj.GetAllScreenPoints()))
+            {
+               DeskViewModel.Instance.SelectedObjects.SelectObject(obj.ModelID);
+               obj.SetState(GE_VMObject.VMObjectState.Selected);
+            }
+            else
+            {
+               if (!IsCtrlPressed)
+               {
+                  DeskViewModel.Instance.SelectedObjects.DeSelectObject(obj.ModelID);
+                  obj.SetState(GE_VMObject.VMObjectState.None);
+               }
+            }
          }
       }
 
-      private void selectSegment(GE_VM_Object.VM_Segment segment)
+      private void reHoverObjects()
       {
-         if (DeskViewModel.Instance.SelectArea.IsSegmentInside(segment))
-            segment.Select();
-         else if (!IsCtrlPressed)
-            segment.DeSelect();
+         foreach (GE_VMObject.VM_BaseObject obj in DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
+         {
+            if (DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID))
+               continue;
+
+            if (DeskViewModel.Instance.SelectArea.IsInside(obj.GetAllScreenPoints()))
+               obj.SetState(GE_VMObject.VMObjectState.Hovered);
+            else
+               obj.SetState(GE_VMObject.VMObjectState.None);
+         }
       }
    }
 }

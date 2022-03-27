@@ -6,11 +6,12 @@ namespace GE_Tool
    class DefaultTool : BaseTool
    {
       public override ToolID ID => ToolID.Select;
-      private DefaultToolMode _activeMode = null;
+      private DefaultToolMode _activeMode = new PickSelectMode();
 
       public override void MouseMove(MouseEventArgs e)
       {
          _activeMode?.OnMouseMove(e);
+
       }
 
       public override void MouseDown(MouseButtonEventArgs e)
@@ -28,13 +29,14 @@ namespace GE_Tool
       public override void MouseUp(MouseButtonEventArgs e)
       {
          _activeMode?.OnMouseUp(e);
-         _activeMode = null;
+         _activeMode = new PickSelectMode();
       }
 
       public override void MouseWheel(MouseWheelEventArgs e)
       {
          _activeMode = new ScaleViewMode();
          _activeMode.OnMouseWheel(e);
+         _activeMode = new PickSelectMode();
       }
 
       public override void KeyDown(KeyEventArgs e)

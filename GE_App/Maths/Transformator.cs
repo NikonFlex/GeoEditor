@@ -21,6 +21,7 @@
             return;
 
          Pivot = bRect.Center;
+
          int borderShift = 20;
          double scaleW = bRect.Width / (ScreenWidth - borderShift * 2);
          double scaleH = bRect.Height / (ScreenHeight - borderShift * 2);
