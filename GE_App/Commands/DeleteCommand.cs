@@ -17,11 +17,16 @@ namespace GE_Command
             if (!GE_ViewModel.DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID))
                continue;
 
-            obj.DeleteUI();
-            GE_ViewModel.DeskViewModel.Instance.SelectedObjects.DeSelectObject(obj.ModelID);
-            GE_ViewModel.DeskViewModel.Instance.ObjectsViews.RemoveObjectWithID(obj.ModelID);
-            GE_Model.Model.Instance.Objects.RemoveObjectWithID(obj.ModelID);
+            deleteObject(obj);
          }
+      }
+
+      private void deleteObject(GE_VMObject.VM_BaseObject obj)
+      {
+         obj.DeleteUI();
+         GE_ViewModel.DeskViewModel.Instance.SelectedObjects.DeSelectObject(obj.ModelID);
+         GE_ViewModel.DeskViewModel.Instance.ObjectsViews.RemoveObjectWithID(obj.ModelID);
+         GE_Model.Model.Instance.Objects.RemoveObjectWithID(obj.ModelID);
       }
    }
 }

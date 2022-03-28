@@ -53,6 +53,15 @@ namespace GE_Tool
          DeActivate();
       }
 
+      protected virtual void Activate() { }
+      protected virtual void DeActivate() { }
+      protected virtual void MouseMove(MouseEventArgs e) { }
+      protected virtual void MouseDown(MouseButtonEventArgs e) { }
+      protected virtual void MouseUp(MouseButtonEventArgs e) { }
+      protected virtual void MouseWheel(MouseWheelEventArgs e) { }
+      protected virtual void KeyDown(KeyEventArgs e) { }
+      protected virtual void KeyUp(KeyEventArgs e) { }
+
       private void onMouseMove(MouseEventArgs e)
       {
          if (_isActive)
@@ -94,14 +103,5 @@ namespace GE_Tool
          if (_isActive)
             KeyUp(e);
       }
-
-      protected virtual void Activate() { }
-      protected virtual void DeActivate() { }
-      protected virtual void MouseMove(MouseEventArgs e) { }
-      protected virtual void MouseDown(MouseButtonEventArgs e) { }
-      protected virtual void MouseUp(MouseButtonEventArgs e) { }
-      protected virtual void MouseWheel(MouseWheelEventArgs e) { }
-      protected virtual void KeyDown(KeyEventArgs e) { }
-      protected virtual void KeyUp(KeyEventArgs e) { }
    }
 }

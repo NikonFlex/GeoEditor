@@ -6,24 +6,23 @@ namespace GE_VMObject
 {
    class KeyPoint
    {
-      public PrimPoint Point { get; private set; }
+      public PrimPoint Coord { get; private set; }
       public VM_BaseObject Object { get; private set; }
       public int PointIndex { get; private set; }
       public bool IsActive { get; private set; }
-      public double Radius { get; private set; }
+      public double Radius { get; private set; } = 3.5;
 
       private System.Windows.UIElement _objectUI;
 
       public KeyPoint(PrimPoint point, VM_BaseObject obj, int pointIndex)
       {
-         Point = point;
+         Coord = point;
          Object = obj;
          PointIndex = pointIndex;
-         Radius = 3.5;
       }
 
       protected SolidColorBrush _mainBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#8f00ff");
-      protected SolidColorBrush _hoveredBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#ff006d");
+      protected SolidColorBrush _hoveredBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#01befe");
       protected SolidColorBrush _selectedBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#adff02");
 
       public void SetState(VMObjectState state)
@@ -48,7 +47,7 @@ namespace GE_VMObject
 
       public void SetPoint(PrimPoint newPoint)
       {
-         Point = newPoint;
+         Coord = newPoint;
          Object.SetPoint(newPoint, PointIndex);
          Object.RefreshUI();
          RefreshUI();
@@ -56,7 +55,7 @@ namespace GE_VMObject
 
       public System.Windows.UIElement CreateView()
       {
-         var pointsList = GeoEditor.Utils.CreateRegularFigure(Point, Radius, 36); // hexagon
+         var pointsList = GeoEditor.Utils.CreateRegularFigure(Coord, Radius, 36); // hexagon
          return _objectUI = GeoEditor.Utils.CreatePolygon(pointsList, 0.9, (SolidColorBrush)new BrushConverter().ConvertFrom("#000000"), _mainBrush);
       }
 
@@ -67,7 +66,7 @@ namespace GE_VMObject
 
       public void RefreshUI()
       {
-         List<PrimPoint> points = GeoEditor.Utils.CreateRegularFigure(Point, Radius, 45);
+         List<PrimPoint> points = GeoEditor.Utils.CreateRegularFigure(Coord, Radius, 45);
 
          System.Windows.Shapes.Polygon polygon = _objectUI as System.Windows.Shapes.Polygon;
          polygon.Points.Clear();

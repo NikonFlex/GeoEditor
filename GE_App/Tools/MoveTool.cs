@@ -10,7 +10,7 @@ namespace GE_Tool
       public override ToolID ID => ToolID.Move;
 
       private List<GE_VMObject.KeyPoint> _movePoints = new();
-      private List<GE_VMObject.KeyPoint> _snapPoints = new();
+      private GE_VMObject.KeyPoint _snapPoint;
 
       protected override void Activate()
       {
@@ -23,7 +23,7 @@ namespace GE_Tool
             keyPoint.DeleteUI();
 
          _movePoints.Clear();
-         _snapPoints.Clear();
+         _snapPoint = null;
       }
 
       protected override void MouseMove(MouseEventArgs e)
@@ -54,7 +54,7 @@ namespace GE_Tool
          {
             if (movePoint.IsActive)
             {
-               calcSnapPoints(movePoint, eventPos);
+               calcSnapPoint(movePoint, eventPos);
 
                if (_isCtrlPressed)
                   movePoint.SetPoint(snapMove(eventPos));
@@ -66,8 +66,8 @@ namespace GE_Tool
 
       private PrimPoint snapMove(PrimPoint eventPos)
       {
-         if (_snapPoints.Count != 0)
-            return findClosestSnapPoint(eventPos).Point;
+         if (_snapPoint is not null)
+            return _snapPoint.Coord;
          else
             return eventPos;
       }
@@ -83,7 +83,7 @@ namespace GE_Tool
       {
          foreach (GE_VMObject.KeyPoint MovePoint in _movePoints)
          {
-            if (MovePoint.Point.DistTo(point) <= MovePoint.Radius)
+            if (MovePoint.Coord.DistTo(point) <= MovePoint.Radius)
                MovePoint.SetState(GE_VMObject.VMObjectState.Selected);
             else
                MovePoint.SetState(GE_VMObject.VMObjectState.None);
@@ -97,7 +97,7 @@ namespace GE_Tool
             if (keyPoint.IsActive)
                continue;
 
-            if (keyPoint.Point.DistTo(point) <= keyPoint.Radius)
+            if (keyPoint.Coord.DistTo(point) <= keyPoint.Radius)
                keyPoint.SetState(GE_VMObject.VMObjectState.Hovered);
             else
                keyPoint.SetState(GE_VMObject.VMObjectState.None);
@@ -114,30 +114,26 @@ namespace GE_Tool
             GE_ViewModel.DeskViewModel.Instance.AddKeyPoint(keyPoint);
       }
 
-      private void calcSnapPoints(GE_VMObject.KeyPoint movePoint, PrimPoint eventPos)
+      private void calcSnapPoint(GE_VMObject.KeyPoint movePoint, PrimPoint eventPos)
       {
-         _snapPoints.Clear();
+         _snapPoint = null;
+
          foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
          {
             if (obj == movePoint.Object)
                continue;
 
             GE_VMObject.KeyPoint snapPoint = obj.GetSnapPoint(eventPos);
-            if (snapPoint is not null)
-               _snapPoints.Add(snapPoint);
-         }
-      }
 
-      private GE_VMObject.KeyPoint findClosestSnapPoint(PrimPoint eventPos)
-      {
-         GE_VMObject.KeyPoint closestSnapPoint = _snapPoints[0];
-         foreach (GE_VMObject.KeyPoint snapPoint in _snapPoints)
-         {
-            if (snapPoint.Point.DistTo(eventPos) < closestSnapPoint.Point.DistTo(eventPos))
-               closestSnapPoint = snapPoint;
-         }
+            if (_snapPoint is null)
+            {
+               _snapPoint = snapPoint;
+               continue;
+            }
 
-         return closestSnapPoint;
+            if (snapPoint is not null && snapPoint.Coord.DistTo(eventPos) <= _snapPoint.Coord.DistTo(eventPos))
+               _snapPoint = snapPoint;
+         }
       }
    }
 }

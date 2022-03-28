@@ -16,8 +16,8 @@ namespace GE_VMObject
       protected System.Windows.UIElement _objectUI;
 
       protected SolidColorBrush _mainBrush;
-      protected SolidColorBrush _hoveredBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#fca311");
-      protected SolidColorBrush _selectedBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#e63946");
+      protected SolidColorBrush _hoveredBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#01befe");
+      protected SolidColorBrush _selectedBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#adff02");
       
       public int ModelID => _modelID;
 
@@ -27,13 +27,17 @@ namespace GE_VMObject
          switch (state)
          {
             case VMObjectState.Selected:
-               shape.Stroke = _selectedBrush;
+               shape.Effect = new System.Windows.Media.Effects.DropShadowEffect { ShadowDepth = 0, 
+                                                                                  Opacity = 5, 
+                                                                                  Color = _selectedBrush.Color };
                break;
             case VMObjectState.Hovered:
-               shape.Stroke = _hoveredBrush;
+               shape.Effect = new System.Windows.Media.Effects.DropShadowEffect { ShadowDepth = 0, 
+                                                                                  Opacity = 5, 
+                                                                                  Color = _hoveredBrush.Color };
                break;
             case VMObjectState.None:
-               shape.Stroke = _mainBrush;
+               shape.Effect = null;
                break;
          }
       }

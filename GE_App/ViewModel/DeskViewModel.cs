@@ -7,19 +7,13 @@ namespace GE_ViewModel
    {
       public static DeskViewModel Instance { get; } = new();
       public GE_Maths.Transformator Transformator { get; private set; }
-      public GeoEditor.GE_VM_ObjectsCollection ObjectsViews { get; private set; }
-      public GeoEditor.GE_SelectionCollection SelectedObjects { get; private set; }
+      public GeoEditor.GE_VM_ObjectsCollection ObjectsViews { get; private set; } = new();
+      public GeoEditor.GE_SelectionCollection SelectedObjects { get; private set; } = new();
       public System.Windows.Controls.Canvas Screen { get; private set; }
-      public SelectArea SelectArea { get; private set; }
-      public Phantom Phantom { get; private set; }
+      public SelectArea SelectArea { get; private set; } = new();
+      public Phantom Phantom { get; private set; } = new();
 
-      private DeskViewModel() 
-      {
-         ObjectsViews = new();
-         SelectedObjects = new();
-         SelectArea = new();
-         Phantom = new();
-      }
+      private DeskViewModel() { }
 
       public void SetScreen(System.Windows.Controls.Canvas screen)
       {

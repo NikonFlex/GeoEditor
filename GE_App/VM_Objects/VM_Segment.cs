@@ -10,7 +10,7 @@ namespace GE_VMObject
    {
       public GE_GeomObject.Segment Segment => (GE_GeomObject.Segment)GE_Model.Model.Instance.Objects.ObjectsReadOnly.First(obj => obj.ID == _modelID);
 
-      private double _eps = 3;
+      private double _eps = 4;
 
       public VM_Segment(int id)
       {
@@ -37,11 +37,20 @@ namespace GE_VMObject
       {
          List<KeyPoint> snapPoints = new();
 
+         //try snap to shape points
          List<PrimPoint> shapePoints = GetAllScreenPoints();
          foreach (PrimPoint shapePoint in shapePoints)
          {
             if (shapePoint.DistTo(point) <= _eps)
                snapPoints.Add(new(shapePoint, this, -1));
+         }
+
+         //try snap to shape edge
+         if (snapPoints.Count == 0)
+         {
+            PrimPoint closestOnSeg = GE_Maths.GE_Math.ClosestPointOnSeg(point, shapePoints[0], shapePoints[1]);
+            if (point.DistTo(closestOnSeg) <= _eps)
+               snapPoints.Add(new(closestOnSeg, this, -1));
          }
 
          if (snapPoints.Count == 0)
@@ -50,7 +59,7 @@ namespace GE_VMObject
          KeyPoint closestSnapPoint = snapPoints[0];
 
          foreach (KeyPoint snapPoint in snapPoints)
-            if (snapPoint.Point.DistTo(point) < closestSnapPoint.Point.DistTo(point))
+            if (snapPoint.Coord.DistTo(point) < closestSnapPoint.Coord.DistTo(point))
                closestSnapPoint = snapPoint;
 
          return closestSnapPoint;
@@ -82,8 +91,8 @@ namespace GE_VMObject
       public override UIElement CreateView()
       {
          return _objectUI = GeoEditor.Utils.CreateSegmentView(GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(0)),
-                                                              GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(1)),
-                                                              1.5, _mainBrush);
+                                                       GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(1)),
+                                                       1.5, _mainBrush);
       }
 
       public override void DeleteUI()

@@ -11,8 +11,8 @@ namespace GE_Command
       {
          GE_Maths.BoundRect bRect = new();
 
-         bool _zoomOnSelected = GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly.Any
-                                 (obj => GE_ViewModel.DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID));
+         bool _zoomOnSelected = GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly.
+                                Any(obj => GE_ViewModel.DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID));
 
          foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
          {
