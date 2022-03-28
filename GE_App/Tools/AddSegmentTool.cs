@@ -8,11 +8,10 @@ namespace GE_Tool
    {
       private PrimPolyline _curSegment = null;
       private bool _isFirstPointSet = false;
-      private bool _isShiftPressed = false;
 
       public override ToolID ID => ToolID.AddSegment;
 
-      public override void MouseMove(MouseEventArgs e)
+      protected override void MouseMove(MouseEventArgs e)
       {
          if (_isFirstPointSet)
          {
@@ -21,7 +20,7 @@ namespace GE_Tool
          }
       }
 
-      public override void MouseDown(MouseButtonEventArgs e)
+      protected override void MouseDown(MouseButtonEventArgs e)
       {
          PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(GE_ViewModel.DeskViewModel.Instance.Screen));
          if (!_isFirstPointSet)
@@ -30,7 +29,7 @@ namespace GE_Tool
             finish();
       }
 
-      public override void KeyDown(KeyEventArgs e)
+      protected override void KeyDown(KeyEventArgs e)
       {
          if (e.Key == Key.Escape)
             emergencyFinish();
@@ -39,13 +38,13 @@ namespace GE_Tool
             _isShiftPressed = true;
       }
 
-      public override void KeyUp(KeyEventArgs e)
+      protected override void KeyUp(KeyEventArgs e)
       {
          if (e.Key == Key.LeftShift)
             _isShiftPressed = false;
       }
 
-      private void start(PrimPoint screenEventPos)
+      protected void start(PrimPoint screenEventPos)
       {
          _curSegment = new();
          _curSegment.AddPoint(screenEventPos);

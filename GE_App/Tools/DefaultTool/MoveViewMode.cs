@@ -10,7 +10,6 @@ namespace GE_Tool
       public override void OnMouseMove(MouseEventArgs e)
       {
          PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(DeskViewModel.Instance.Screen));
-
          PrimPoint prevGlobalEventPos = DeskViewModel.Instance.Transformator.ScreenToWorld(_prevMousePos);
 
          GE_Maths.Transformator tr = DeskViewModel.Instance.Transformator;

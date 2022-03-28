@@ -10,48 +10,80 @@ namespace GE_VMObject
    {
       public GE_GeomObject.Segment Segment => (GE_GeomObject.Segment)GE_Model.Model.Instance.Objects.ObjectsReadOnly.First(obj => obj.ID == _modelID);
 
+      private double _eps = 3;
+
       public VM_Segment(int id)
       {
          _modelID = id;
          _mainBrush = (System.Windows.Media.SolidColorBrush)new System.Windows.Media.BrushConverter().ConvertFrom(Segment.Color);
       }
 
-      public override List<PrimPoint> GetMovePoints()
+      public override void SetPoint(PrimPoint newPoint, int pointIndex)
       {
-         throw new System.NotImplementedException();
+         Segment.SetPoint(GE_ViewModel.DeskViewModel.Instance.Transformator.ScreenToWorld(newPoint), pointIndex);
       }
 
-      public override List<PrimPoint> GetSnapPoints()
+      public override List<KeyPoint> GetMovePoints()
       {
-         throw new System.NotImplementedException();
+         List<KeyPoint> keyPoints = new();
+         List<PrimPoint> shapePoints = GetAllScreenPoints();
+         for (int i = 0; i < shapePoints.Count; i++)
+            keyPoints.Add(new KeyPoint(shapePoints[i], this, i));
+
+         return keyPoints;
       }
+
+      public override KeyPoint GetSnapPoint(PrimPoint point)
+      {
+         List<KeyPoint> snapPoints = new();
+
+         List<PrimPoint> shapePoints = GetAllScreenPoints();
+         foreach (PrimPoint shapePoint in shapePoints)
+         {
+            if (shapePoint.DistTo(point) <= _eps)
+               snapPoints.Add(new(shapePoint, this, -1));
+         }
+
+         if (snapPoints.Count == 0)
+            return null;
+
+         KeyPoint closestSnapPoint = snapPoints[0];
+
+         foreach (KeyPoint snapPoint in snapPoints)
+            if (snapPoint.Point.DistTo(point) < closestSnapPoint.Point.DistTo(point))
+               closestSnapPoint = snapPoint;
+
+         return closestSnapPoint;
+      }
+
       public override List<PrimPoint> GetAllScreenPoints()
       {
          List<PrimPoint> points = new();
-         points.Add(GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.P1));
-         points.Add(GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.P2));
+         points.Add(GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(0)));
+         points.Add(GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(1)));
          return points;
       }
 
       public override List<PrimPoint> GetAllWorldPoints()
       {
          List<PrimPoint> points = new();
-         points.Add(Segment.P1);
-         points.Add(Segment.P2);
+         points.Add(Segment.GetPoint(0));
+         points.Add(Segment.GetPoint(1));
          return points;
       }
 
       public override double DistTo(PrimPoint point)
       {
-         return GE_Maths.GE_Math.PointToSegmentDist(point, GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.P1),
-                                                           GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.P2));
+         PrimPoint closestPoint = GE_Maths.GE_Math.ClosestPointOnSeg(point, GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(0)),
+                                                                            GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(1)));
+         return point.DistTo(closestPoint);
       }
 
       public override UIElement CreateView()
       {
-         return _objectUI = GeoEditor.Utils.CreateSegmentView(GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.P1),
-                                                  GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.P2),
-                                                  1.5, _mainBrush);
+         return _objectUI = GeoEditor.Utils.CreateSegmentView(GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(0)),
+                                                              GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(1)),
+                                                              1.5, _mainBrush);
       }
 
       public override void DeleteUI()
@@ -62,8 +94,8 @@ namespace GE_VMObject
       public override void RefreshUI()
       {
          System.Windows.Shapes.Line segment = _objectUI as System.Windows.Shapes.Line;
-         PrimPoint p1 = GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.P1);
-         PrimPoint p2 = GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.P2);
+         PrimPoint p1 = GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(0));
+         PrimPoint p2 = GE_ViewModel.DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(1));
          segment.X1 = p1.X;
          segment.Y1 = p1.Y;
          segment.X2 = p2.X;

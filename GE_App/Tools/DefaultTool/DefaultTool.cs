@@ -5,16 +5,20 @@ namespace GE_Tool
    [Tool]
    class DefaultTool : BaseTool
    {
-      public override ToolID ID => ToolID.Select;
-      private DefaultToolMode _activeMode = new PickSelectMode();
+      public override ToolID ID => ToolID.Default;
+      private DefaultToolMode _activeMode;
 
-      public override void MouseMove(MouseEventArgs e)
+      public DefaultTool()
       {
-         _activeMode?.OnMouseMove(e);
-
+         _activeMode = new PickSelectMode();
       }
 
-      public override void MouseDown(MouseButtonEventArgs e)
+      protected override void MouseMove(MouseEventArgs e)
+      {
+         _activeMode?.OnMouseMove(e);
+      }
+
+      protected override void MouseDown(MouseButtonEventArgs e)
       {
          if (e.ChangedButton == MouseButton.Left)
             _activeMode = new AreaSelectMode();
@@ -26,35 +30,27 @@ namespace GE_Tool
          _activeMode.OnMouseDown(e);
       }
 
-      public override void MouseUp(MouseButtonEventArgs e)
+      protected override void MouseUp(MouseButtonEventArgs e)
       {
          _activeMode?.OnMouseUp(e);
          _activeMode = new PickSelectMode();
       }
 
-      public override void MouseWheel(MouseWheelEventArgs e)
+      protected override void MouseWheel(MouseWheelEventArgs e)
       {
          _activeMode = new ScaleViewMode();
          _activeMode.OnMouseWheel(e);
          _activeMode = new PickSelectMode();
       }
 
-      public override void KeyDown(KeyEventArgs e)
+      protected override void KeyDown(KeyEventArgs e)
       {
-         if (_activeMode is null)
-            return;
-
-         if (e.Key == Key.LeftCtrl)
-            _activeMode.IsCtrlPressed = true;
+         _activeMode.OnKeyDown(e);
       }
 
-      public override void KeyUp(KeyEventArgs e)
+      protected override void KeyUp(KeyEventArgs e)
       {
-         if (_activeMode is null)
-            return;
-
-         if (e.Key == Key.LeftCtrl)
-            _activeMode.IsCtrlPressed = false;
+         _activeMode.OnKeyUp(e);
       }
    }
 }

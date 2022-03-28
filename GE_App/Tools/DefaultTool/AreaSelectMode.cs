@@ -8,6 +8,7 @@ namespace GE_Tool
    class AreaSelectMode : DefaultToolMode
    {
       private bool _isOriginPointSet = false;
+      private bool _isCtrlPressed = false;
 
       public override void OnMouseMove(MouseEventArgs e)
       {
@@ -34,6 +35,16 @@ namespace GE_Tool
          finish();
       }
 
+      public override void OnKeyDown(KeyEventArgs e)
+      {
+         _isCtrlPressed = e.Key == Key.LeftCtrl;
+      }
+
+      public override void OnKeyUp(KeyEventArgs e)
+      {
+         _isCtrlPressed = e.Key == Key.LeftCtrl;
+      }
+
       private void start(PrimPoint screenEventPos)
       {
          DeskViewModel.Instance.SelectArea.SetControlPoint(screenEventPos);
@@ -58,7 +69,7 @@ namespace GE_Tool
             }
             else
             {
-               if (!IsCtrlPressed)
+               if (!_isCtrlPressed)
                {
                   DeskViewModel.Instance.SelectedObjects.DeSelectObject(obj.ModelID);
                   obj.SetState(GE_VMObject.VMObjectState.None);

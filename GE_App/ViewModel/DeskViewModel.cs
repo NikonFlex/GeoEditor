@@ -5,67 +5,46 @@ namespace GE_ViewModel
 { 
    class DeskViewModel
    {
-      private static DeskViewModel _instance = new();
-      private static GE_Maths.Transformator _transformator;
-      private GeoEditor.GE_VM_ObjectsCollection _objectsViews = new();
-      private GeoEditor.GE_SelectionCollection _selectedObjects = new();
-      private System.Windows.Controls.Canvas _screen;
-      
-      private SelectArea _selectArea = new();
-      private Phantom _phantom = new();
-      
-      private DeskViewModel() { }
+      public static DeskViewModel Instance { get; } = new();
+      public GE_Maths.Transformator Transformator { get; private set; }
+      public GeoEditor.GE_VM_ObjectsCollection ObjectsViews { get; private set; }
+      public GeoEditor.GE_SelectionCollection SelectedObjects { get; private set; }
+      public System.Windows.Controls.Canvas Screen { get; private set; }
+      public SelectArea SelectArea { get; private set; }
+      public Phantom Phantom { get; private set; }
 
-      public static DeskViewModel Instance => _instance;
-      public System.Windows.Controls.Canvas Screen => _screen;
-      public GE_Maths.Transformator Transformator => _transformator;
-      public GeoEditor.GE_VM_ObjectsCollection ObjectsViews => _objectsViews;
-      public GeoEditor.GE_SelectionCollection SelectedObjects => _selectedObjects;
-      public SelectArea SelectArea => _selectArea;
-      public Phantom Phantom => _phantom;
+      private DeskViewModel() 
+      {
+         ObjectsViews = new();
+         SelectedObjects = new();
+         SelectArea = new();
+         Phantom = new();
+      }
 
       public void SetScreen(System.Windows.Controls.Canvas screen)
       {
-         _screen = screen;
-         _transformator = new(_screen.ActualWidth, _screen.ActualHeight);
-         _screen.Children.Add(_phantom.CreateView());
-         _screen.Children.Add(_selectArea.CreateView());
-         //drawCenter();
-      }
-
-      public void SetPhantomGeometry(GE_Primitive.PrimPolyline newPhantom)
-      {
-         _phantom.SetGeometry(newPhantom);
+         Screen = screen;
+         Transformator = new(Screen.ActualWidth, Screen.ActualHeight);
+         Screen.Children.Add(Phantom.CreateView());
+         Screen.Children.Add(SelectArea.CreateView());
       }
 
       public void AddSegment(GE_Primitive.PrimPoint p1, GE_Primitive.PrimPoint p2)
       {
-         int objID = GE_Model.Model.Instance.AddSegment(_transformator.ScreenToWorld(p1), _transformator.ScreenToWorld(p2));
-         _objectsViews.AddObject(new GE_VMObject.VM_Segment(objID));
-         _screen.Children.Add(_objectsViews.ObjectsReadOnly.Last().CreateView());
+         int objID = GE_Model.Model.Instance.AddSegment(Transformator.ScreenToWorld(p1), Transformator.ScreenToWorld(p2));
+         ObjectsViews.AddObject(new GE_VMObject.VM_Segment(objID));
+         Screen.Children.Add(ObjectsViews.ObjectsReadOnly.Last().CreateView());
+      }
+
+      public void AddKeyPoint(GE_VMObject.KeyPoint keyPoint)
+      {
+         Screen.Children.Add(keyPoint.CreateView());
       }
 
       public void RefreshView()
       {
-         foreach (GE_VMObject.VM_BaseObject view in _objectsViews.ObjectsReadOnly)
+         foreach (GE_VMObject.VM_BaseObject view in ObjectsViews.ObjectsReadOnly)
             view.RefreshUI();
       }
-
-      //public void MakeNewView()
-      //{
-      //   foreach (GE_ view in _objectsViews.ObjectsReadOnly)
-      //      view.RefreshUI();
-      //}
-
-      //private void drawCenter()
-      //{
-      //   GE_Primitive.PrimPoint worldCenter = _transformator.WorldToScreen(new GE_Primitive.PrimPoint(0, 0));
-      //   _screen.Children.Add(GeoEditor.Utils.CreateSegmentView(new(worldCenter.X - 5, worldCenter.Y), 
-      //                                                          new(worldCenter.X + 5, worldCenter.Y), 1, System.Windows.Media.Brushes.Black));
-
-      //   _screen.Children.Add(GeoEditor.Utils.CreateSegmentView(new(worldCenter.X, worldCenter.Y - 5),
-      //                                                          new(worldCenter.X, worldCenter.Y + 5), 1, System.Windows.Media.Brushes.Black));
-
-      //}
    }
 }

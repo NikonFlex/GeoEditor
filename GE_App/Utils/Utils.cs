@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Shapes;
 using System.Windows.Media;
+using GE_Primitive;
 
 namespace GeoEditor
 {
@@ -63,9 +64,9 @@ namespace GeoEditor
 
    static class Utils
    {
-      public static Line CreateSegmentView(GE_Primitive.PrimPoint p1, GE_Primitive.PrimPoint p2, double thickness, SolidColorBrush brush)
+      public static Line CreateSegmentView(PrimPoint p1, PrimPoint p2, double thickness, SolidColorBrush brush)
       {
-         Line newLine = new Line();
+         Line newLine = new();
          newLine.X1 = p1.X;
          newLine.Y1 = p1.Y;
          newLine.X2 = p2.X;
@@ -76,10 +77,23 @@ namespace GeoEditor
          return newLine;
       }
 
-      public static Polygon CreatePolygon(List<GE_Primitive.PrimPoint> pointsList, double thickness, SolidColorBrush brush)
+      public static Polygon CreatePolygon(List<PrimPoint> pointsList, double thickness, SolidColorBrush strokeBrush, SolidColorBrush fillBrush = null)
       {
-         Polygon newPolygon = new Polygon();
-         foreach (GE_Primitive.PrimPoint point in pointsList)
+         Polygon newPolygon = new();
+         foreach (PrimPoint point in pointsList)
+            newPolygon.Points.Add(new System.Windows.Point(point.X, point.Y));
+
+         newPolygon.Stroke = strokeBrush;
+         newPolygon.StrokeThickness = thickness;
+         newPolygon.IsHitTestVisible = false;
+         newPolygon.Fill = fillBrush;
+         return newPolygon;
+      }
+
+      public static Polyline CreatePolyline(List<PrimPoint> pointsList, double thickness, SolidColorBrush brush)
+      {
+         Polyline newPolygon = new();
+         foreach (PrimPoint point in pointsList)
             newPolygon.Points.Add(new System.Windows.Point(point.X, point.Y));
 
          newPolygon.Stroke = brush;
@@ -88,26 +102,14 @@ namespace GeoEditor
          return newPolygon;
       }
 
-      public static Polyline CreatePolyline(List<GE_Primitive.PrimPoint> pointsList, double thickness, SolidColorBrush brush)
+      public static List<PrimPoint> CreateRegularFigure(PrimPoint center, double radius, int step)
       {
-         Polyline newPolygon = new Polyline();
-         foreach (GE_Primitive.PrimPoint point in pointsList)
-            newPolygon.Points.Add(new System.Windows.Point(point.X, point.Y));
-
-         newPolygon.Stroke = brush;
-         newPolygon.StrokeThickness = thickness;
-         newPolygon.IsHitTestVisible = false;
-         return newPolygon;
-      }
-
-      public static List<GE_Primitive.PrimPoint> CreateCircle(GE_Primitive.PrimPoint center, double radius, int step)
-      {
-         List<GE_Primitive.PrimPoint> circlePoints = new();
+         List<PrimPoint> circlePoints = new();
 
          for (float a = 0; a <= 360; a += step)
          {
-            circlePoints.Add(new GE_Primitive.PrimPoint(radius * Math.Cos(a * Math.PI / 180) + center.X,
-                                                        radius * Math.Sin(a * Math.PI / 180) + center.Y));
+            circlePoints.Add(new PrimPoint(radius * Math.Cos(a * Math.PI / 180) + center.X,
+                                           radius * Math.Sin(a * Math.PI / 180) + center.Y));
          }
 
          return circlePoints;

@@ -46,7 +46,7 @@
             x:Name="MoveTool" 
             Grid.Row="3" 
             Grid.Column="2" 
-            Click="moveToolButtonClick" 
+            Click="moveToolButtonClick"          
             Content="Move"/>
         <Button 
             x:Name="DeleteCommand" 

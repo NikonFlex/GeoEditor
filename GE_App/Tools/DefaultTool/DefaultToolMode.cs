@@ -4,7 +4,6 @@ namespace GE_Tool
 {
    abstract class DefaultToolMode
    {
-      public bool IsCtrlPressed { protected get; set; }
       public virtual void OnMouseMove(MouseEventArgs e) { }
       public virtual void OnMouseDown(MouseButtonEventArgs e) { }
       public virtual void OnMouseUp(MouseButtonEventArgs e) { }

@@ -43,9 +43,9 @@ namespace GeoEditor
          foreach (GE_Tool.BaseTool tool in _tools)
          {
             if (tool.IsActive&& tool.ID != activeToolID)
-               tool.DeActivate();
+               tool.OnDeActivate();
             else if (tool.ID == activeToolID && !tool.IsActive)
-               tool.Activate();
+               tool.OnActivate();
          }
       }
 
@@ -56,6 +56,7 @@ namespace GeoEditor
             if (command.ID == commandID)
                command.DoCommand();
          }
+         activateTool(GE_Tool.ToolID.Default);
       }
 
       private void addSegmentToolButtonClick(object sender, RoutedEventArgs e)
@@ -65,7 +66,7 @@ namespace GeoEditor
 
       private void defaultToolButtonClick(object sender, RoutedEventArgs e)
       {
-         activateTool(GE_Tool.ToolID.Select);
+         activateTool(GE_Tool.ToolID.Default);
       }
 
       private void moveToolButtonClick(object sender, RoutedEventArgs e)

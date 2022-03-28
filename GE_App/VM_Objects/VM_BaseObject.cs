@@ -38,10 +38,11 @@ namespace GE_VMObject
          }
       }
 
+      public abstract void SetPoint(GE_Primitive.PrimPoint newPoint, int pointIndex);
       public abstract List<GE_Primitive.PrimPoint> GetAllScreenPoints();
       public abstract List<GE_Primitive.PrimPoint> GetAllWorldPoints();
-      public abstract List<GE_Primitive.PrimPoint> GetMovePoints();
-      public abstract List<GE_Primitive.PrimPoint> GetSnapPoints();
+      public abstract List<KeyPoint> GetMovePoints();
+      public abstract KeyPoint GetSnapPoint(GE_Primitive.PrimPoint point);
       public abstract double DistTo(GE_Primitive.PrimPoint point);
       public abstract System.Windows.UIElement CreateView();
       public abstract void DeleteUI();

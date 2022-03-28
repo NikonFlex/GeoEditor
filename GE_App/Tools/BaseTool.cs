@@ -7,13 +7,17 @@ namespace GE_Tool
 
    enum ToolID
    {
-      Select,
+      Default,
       AddSegment,
       Move
    }
 
    abstract class BaseTool
    {
+      protected bool _isActive = false;
+      protected bool _isCtrlPressed = false;
+      protected bool _isShiftPressed = false;
+
       public BaseTool()
       {
          GE_Service.ServicesContainer.Get<GE_Service.IEventService>().OnMouseMove += onMouseMove;
@@ -34,13 +38,20 @@ namespace GE_Tool
          GE_Service.ServicesContainer.Get<GE_Service.IEventService>().OnKeyUp -= onKeyUp;
       }
 
-      protected bool _isActive;
-
       public abstract ToolID ID { get; }
-
       public bool IsActive => _isActive;
-      public void Activate() => _isActive = true;
-      public void DeActivate() => _isActive = false;
+
+      public void OnActivate()
+      {
+         _isActive = true;
+         Activate();
+      }
+
+      public void OnDeActivate()
+      {
+         _isActive = false;
+         DeActivate();
+      }
 
       private void onMouseMove(MouseEventArgs e)
       {
@@ -68,21 +79,29 @@ namespace GE_Tool
 
       private void onKeyDown(KeyEventArgs e)
       {
+         _isCtrlPressed = e.Key == Key.LeftCtrl;
+         _isShiftPressed = e.Key == Key.LeftShift;
+         
          if (_isActive)
             KeyDown(e);
       }
 
       private void onKeyUp(KeyEventArgs e)
       {
+         _isCtrlPressed = e.Key == Key.LeftCtrl;
+         _isShiftPressed = e.Key == Key.LeftShift;
+
          if (_isActive)
             KeyUp(e);
       }
 
-      public virtual void MouseMove(MouseEventArgs e) { }
-      public virtual void MouseDown(MouseButtonEventArgs e) { }
-      public virtual void MouseUp(MouseButtonEventArgs e) { }
-      public virtual void MouseWheel(MouseWheelEventArgs e) { }
-      public virtual void KeyDown(KeyEventArgs e) { }
-      public virtual void KeyUp(KeyEventArgs e) { }
+      protected virtual void Activate() { }
+      protected virtual void DeActivate() { }
+      protected virtual void MouseMove(MouseEventArgs e) { }
+      protected virtual void MouseDown(MouseButtonEventArgs e) { }
+      protected virtual void MouseUp(MouseButtonEventArgs e) { }
+      protected virtual void MouseWheel(MouseWheelEventArgs e) { }
+      protected virtual void KeyDown(KeyEventArgs e) { }
+      protected virtual void KeyUp(KeyEventArgs e) { }
    }
 }
