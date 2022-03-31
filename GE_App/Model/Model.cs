@@ -4,14 +4,9 @@ namespace GE_Model
 {
    class Model
    {
-      private static Model _instance = new();
-      private static GeoEditor.GE_ObjectsCollection _objects = new();
-
+      private GeoEditor.GE_ObjectsCollection _objects = new();
       private int _highestID = 0; //last ID
 
-      private Model() { }
-
-      public static Model Instance => _instance;
       public GeoEditor.GE_ObjectsCollection Objects => _objects;
 
       public int AddSegment(PrimPoint p1, PrimPoint p2) // returns ID

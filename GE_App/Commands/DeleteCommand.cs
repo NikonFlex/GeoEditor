@@ -26,7 +26,7 @@ namespace GE_Command
          obj.DeleteUI();
          GE_ViewModel.DeskViewModel.Instance.SelectedObjects.DeSelectObject(obj.ModelID);
          GE_ViewModel.DeskViewModel.Instance.ObjectsViews.RemoveObjectWithID(obj.ModelID);
-         GE_Model.Model.Instance.Objects.RemoveObjectWithID(obj.ModelID);
+         GE_ViewModel.DeskViewModel.Instance.Model.Objects.RemoveObjectWithID(obj.ModelID);
       }
    }
 }

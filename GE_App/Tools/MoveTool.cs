@@ -9,8 +9,8 @@ namespace GE_Tool
    {
       public override ToolID ID => ToolID.Move;
 
-      private List<GE_VMObject.KeyPoint> _movePoints = new();
-      private GE_VMObject.KeyPoint _snapPoint;
+      private List<GE_VMObject.MovePoint> _movePoints = new();
+      private GE_VMObject.SnapPoint _snapPoint;
 
       protected override void Activate()
       {
@@ -19,11 +19,11 @@ namespace GE_Tool
 
       protected override void DeActivate()
       {
-         foreach (GE_VMObject.KeyPoint keyPoint in _movePoints)
-            keyPoint.DeleteUI();
+         foreach (GE_VMObject.MovePoint movePoint in _movePoints)
+            movePoint.DeleteUI();
 
          _movePoints.Clear();
-         _snapPoint = null;
+         clearSnapPoint();
       }
 
       protected override void MouseMove(MouseEventArgs e)
@@ -33,13 +33,14 @@ namespace GE_Tool
          if (e.LeftButton == MouseButtonState.Pressed)
             movePoints(screenEventPos);
          else
-            reHoverKeyPoints(screenEventPos);
+            reHoverMovePoints(screenEventPos);
       }
 
       protected override void MouseDown(MouseButtonEventArgs e)
       {
          PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(GE_ViewModel.DeskViewModel.Instance.Screen));
-         reSelectKeyPoints(screenEventPos);
+         reSelectMovePoints(screenEventPos);
+         deleteNotActivatedMovePoints();
       }
 
       protected override void MouseUp(MouseButtonEventArgs e)
@@ -48,9 +49,15 @@ namespace GE_Tool
          finishMove(screenEventPos);
       }
 
+      protected override void KeyUp(KeyEventArgs e)
+      {
+         if (!_isCtrlPressed)
+            clearSnapPoint();
+      }
+
       private void movePoints(PrimPoint eventPos)
       {
-         foreach (GE_VMObject.KeyPoint movePoint in _movePoints)
+         foreach (GE_VMObject.MovePoint movePoint in _movePoints)
          {
             if (movePoint.IsActive)
             {
@@ -67,32 +74,55 @@ namespace GE_Tool
       private PrimPoint snapMove(PrimPoint eventPos)
       {
          if (_snapPoint is not null)
+         {
+            _snapPoint.Activate();
             return _snapPoint.Coord;
+         }
          else
+         {
             return eventPos;
+         }
       }
 
       private void finishMove(PrimPoint eventPos)
       {
-         foreach (GE_VMObject.KeyPoint movePoint in _movePoints)
-            movePoint.SetState(GE_VMObject.VMObjectState.None);
-         reHoverKeyPoints(eventPos);
+         foreach (GE_VMObject.MovePoint movePoint in _movePoints)
+            movePoint.DeleteUI();
+
+         _movePoints.Clear();
+         clearSnapPoint();
+         calcMovePoints();
+         reHoverMovePoints(eventPos);
       }
 
-      private void reSelectKeyPoints(PrimPoint point)
+      private void reSelectMovePoints(PrimPoint point)
       {
-         foreach (GE_VMObject.KeyPoint MovePoint in _movePoints)
+         foreach (GE_VMObject.MovePoint movePoint in _movePoints)
          {
-            if (MovePoint.Coord.DistTo(point) <= MovePoint.Radius)
-               MovePoint.SetState(GE_VMObject.VMObjectState.Selected);
+            if (movePoint.Coord.DistTo(point) <= movePoint.Radius)
+               movePoint.SetState(GE_VMObject.VMObjectState.Selected);
             else
-               MovePoint.SetState(GE_VMObject.VMObjectState.None);
+               movePoint.SetState(GE_VMObject.VMObjectState.None);
          }
       }
 
-      private void reHoverKeyPoints(PrimPoint point)
+      private void deleteNotActivatedMovePoints()
       {
-         foreach (GE_VMObject.KeyPoint keyPoint in _movePoints)
+         List<GE_VMObject.MovePoint> movePoints = new();
+         foreach (GE_VMObject.MovePoint movePoint in _movePoints)
+         {
+            if (movePoint.IsActive)
+               movePoints.Add(movePoint);
+            else
+               movePoint.DeleteUI();
+         }
+         _movePoints.Clear();
+         _movePoints = movePoints;
+      }
+
+      private void reHoverMovePoints(PrimPoint point)
+      {
+         foreach (GE_VMObject.MovePoint keyPoint in _movePoints)
          {
             if (keyPoint.IsActive)
                continue;
@@ -110,30 +140,32 @@ namespace GE_Tool
          foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
             _movePoints.AddRange(obj.GetMovePoints());
 
-         foreach (GE_VMObject.KeyPoint keyPoint in _movePoints)
+         foreach (GE_VMObject.MovePoint keyPoint in _movePoints)
             GE_ViewModel.DeskViewModel.Instance.AddKeyPoint(keyPoint);
       }
 
-      private void calcSnapPoint(GE_VMObject.KeyPoint movePoint, PrimPoint eventPos)
+      private void calcSnapPoint(GE_VMObject.MovePoint movePoint, PrimPoint eventPos)
       {
-         _snapPoint = null;
+         clearSnapPoint();
 
          foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
          {
             if (obj == movePoint.Object)
                continue;
 
-            GE_VMObject.KeyPoint snapPoint = obj.GetSnapPoint(eventPos);
+            GE_VMObject.SnapPoint snapPoint = obj.GetSnapPoint(eventPos);
 
-            if (_snapPoint is null)
-            {
-               _snapPoint = snapPoint;
+            if (snapPoint is null)
                continue;
-            }
-
-            if (snapPoint is not null && snapPoint.Coord.DistTo(eventPos) <= _snapPoint.Coord.DistTo(eventPos))
+            else if (_snapPoint is null || snapPoint.Coord.DistTo(eventPos) <= _snapPoint.Coord.DistTo(eventPos))
                _snapPoint = snapPoint;
          }
+      }
+
+      private void clearSnapPoint()
+      {
+         _snapPoint?.DeActivate();
+         _snapPoint = null;
       }
    }
 }

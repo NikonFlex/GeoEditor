@@ -3,15 +3,18 @@
    abstract class BaseObject
    {
       protected GE_Primitive.PrimPolyline _prim = new();
-      protected string _color = "#000000"; //hex code
-      protected int _id;
-
-      public int ID => _id;
-      public string Color => _color;
+      public string Color { get; protected set; } = "#000000"; //hex code
+      public int ID { get; protected set; }
+      public double Thickness { get; protected set; } = 1;
 
       public void SetColor(string newColor)
       {
-         _color = newColor;
+         Color = newColor;
+      }
+
+      public void SetThickness(double newThickness)
+      {
+         Thickness = newThickness;
       }
 
       public abstract void SetPoint(GE_Primitive.PrimPoint newPoint, int pointIndex);

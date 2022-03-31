@@ -12,6 +12,8 @@
             x:Name="DrawPlace" 
             Background="AliceBlue" 
             Focusable="True"
+            ForceCursor="true" 
+            Cursor="D:\Nikon\proging\csharp\GeoEditor\GE_App\GE_App\Resources\Cursors\Cross.cur"
             MouseDown="mouseDownEvent" 
             MouseUp="mouseUpEvent" 
             MouseMove="mouseMoveEvent"

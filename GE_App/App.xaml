@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:GeoEditor"
              StartupUri="View.xaml">
     <Application.Resources>
-         
+        
     </Application.Resources>
 </Application>

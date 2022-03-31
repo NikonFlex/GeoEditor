@@ -6,7 +6,7 @@
       {
          _prim.Points.Add(p1);
          _prim.Points.Add(p2);
-         _id = id;
+         ID = id;
       }
 
       public override void SetPoint(GE_Primitive.PrimPoint newPoint, int pointIndex)

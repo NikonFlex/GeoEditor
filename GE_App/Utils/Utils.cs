@@ -36,7 +36,7 @@ namespace GeoEditor
       }
       public void RemoveObjectWithID(int id)
       {
-         GE_Model.Model.Instance.RemoveObjectWithID(id);
+         GE_ViewModel.DeskViewModel.Instance.Model.RemoveObjectWithID(id);
          _objects.RemoveAll(view => view.ModelID == id);
       }
    }

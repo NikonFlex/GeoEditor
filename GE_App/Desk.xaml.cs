@@ -93,6 +93,5 @@ namespace GeoEditor.Control
       {
          _onKeyUp?.Invoke(e);
       }
-
    }
 }

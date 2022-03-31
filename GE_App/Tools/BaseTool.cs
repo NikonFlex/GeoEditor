@@ -97,8 +97,8 @@ namespace GE_Tool
 
       private void onKeyUp(KeyEventArgs e)
       {
-         _isCtrlPressed = e.Key == Key.LeftCtrl;
-         _isShiftPressed = e.Key == Key.LeftShift;
+         _isCtrlPressed = !(e.Key == Key.LeftCtrl);
+         _isShiftPressed = !(e.Key == Key.LeftShift);
 
          if (_isActive)
             KeyUp(e);

@@ -24,6 +24,8 @@
       public double Right => _width > 0 ? _origin.X + _width : _origin.X;
       public double Top => _height > 0 ? _origin.Y : _origin.Y + _height;
       public double Bottom => _height > 0 ? _origin.Y + _height : _origin.Y;
+      public double Width => _width;
+      public double Height => _height;
       public PrimPoint ControlPoint => _origin;
 
       public void SetWidth(double newWidth)

@@ -6,12 +6,14 @@ namespace GE_ViewModel
    class DeskViewModel
    {
       public static DeskViewModel Instance { get; } = new();
+      public GE_Model.Model Model { get; private set; } = new();
       public GE_Maths.Transformator Transformator { get; private set; }
       public GeoEditor.GE_VM_ObjectsCollection ObjectsViews { get; private set; } = new();
       public GeoEditor.GE_SelectionCollection SelectedObjects { get; private set; } = new();
       public System.Windows.Controls.Canvas Screen { get; private set; }
       public SelectArea SelectArea { get; private set; } = new();
       public Phantom Phantom { get; private set; } = new();
+      public DeskGrid Grid { get; private set; }
 
       private DeskViewModel() { }
 
@@ -19,18 +21,19 @@ namespace GE_ViewModel
       {
          Screen = screen;
          Transformator = new(Screen.ActualWidth, Screen.ActualHeight);
+         Grid = new();
          Screen.Children.Add(Phantom.CreateView());
          Screen.Children.Add(SelectArea.CreateView());
       }
 
       public void AddSegment(GE_Primitive.PrimPoint p1, GE_Primitive.PrimPoint p2)
       {
-         int objID = GE_Model.Model.Instance.AddSegment(Transformator.ScreenToWorld(p1), Transformator.ScreenToWorld(p2));
+         int objID = Model.AddSegment(Transformator.ScreenToWorld(p1), Transformator.ScreenToWorld(p2));
          ObjectsViews.AddObject(new GE_VMObject.VM_Segment(objID));
          Screen.Children.Add(ObjectsViews.ObjectsReadOnly.Last().CreateView());
       }
 
-      public void AddKeyPoint(GE_VMObject.KeyPoint keyPoint)
+      public void AddKeyPoint(GE_VMObject.MovePoint keyPoint)
       {
          Screen.Children.Add(keyPoint.CreateView());
       }
