@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using System.Diagnostics;
 
 namespace GE_Tool
 {
@@ -88,8 +89,10 @@ namespace GE_Tool
 
       private void onKeyDown(KeyEventArgs e)
       {
-         _isCtrlPressed = e.Key == Key.LeftCtrl;
-         _isShiftPressed = e.Key == Key.LeftShift;
+         if (e.Key == Key.LeftCtrl)
+            _isCtrlPressed = true;
+         if (e.Key == Key.LeftShift)
+            _isShiftPressed = true;
          
          if (_isActive)
             KeyDown(e);
@@ -97,9 +100,11 @@ namespace GE_Tool
 
       private void onKeyUp(KeyEventArgs e)
       {
-         _isCtrlPressed = !(e.Key == Key.LeftCtrl);
-         _isShiftPressed = !(e.Key == Key.LeftShift);
-
+         if (e.Key == Key.LeftCtrl)
+            _isCtrlPressed = false;
+         if (e.Key == Key.LeftShift)
+            _isShiftPressed = false;
+         
          if (_isActive)
             KeyUp(e);
       }

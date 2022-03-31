@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Diagnostics;
+using System.Windows.Input;
 using GE_Primitive;
 
 namespace GE_Tool
@@ -8,15 +9,22 @@ namespace GE_Tool
    {
       private PrimPolyline _curSegment = null;
       private bool _isFirstPointSet = false;
+      private GE_VMObject.SnapPoint _snapPoint;
 
       public override ToolID ID => ToolID.AddSegment;
 
       protected override void MouseMove(MouseEventArgs e)
       {
+         PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(GE_ViewModel.DeskViewModel.Instance.Screen));
+         
          if (_isFirstPointSet)
          {
-            _curSegment.Points[1] = calcSecondPoint(PrimPoint.FromWindowsPoint(e.GetPosition(GE_ViewModel.DeskViewModel.Instance.Screen)));
+            _curSegment.Points[1] = calcSecondPoint(screenEventPos);
             GE_ViewModel.DeskViewModel.Instance.Phantom.SetGeometry(_curSegment);
+         }
+         else
+         {
+            calcFirstPoint(screenEventPos);
          }
       }
 
@@ -33,22 +41,27 @@ namespace GE_Tool
       {
          if (e.Key == Key.Escape)
             emergencyFinish();
-
-         if (e.Key == Key.LeftShift)
-            _isShiftPressed = true;
       }
 
       protected override void KeyUp(KeyEventArgs e)
       {
-         if (e.Key == Key.LeftShift)
-            _isShiftPressed = false;
+         if (!_isCtrlPressed)
+            clearSnapPoint();
       }
 
       protected void start(PrimPoint screenEventPos)
       {
          _curSegment = new();
-         _curSegment.AddPoint(screenEventPos);
-         _curSegment.AddPoint(screenEventPos);
+         if (_snapPoint is not null)
+         {
+            _curSegment.AddPoint(_snapPoint.Coord);
+            _curSegment.AddPoint(_snapPoint.Coord);
+         }
+         else
+         {
+            _curSegment.AddPoint(screenEventPos);
+            _curSegment.AddPoint(screenEventPos);
+         }
          GE_ViewModel.DeskViewModel.Instance.Phantom.SetGeometry(_curSegment);
          _isFirstPointSet = true;
       }
@@ -68,18 +81,62 @@ namespace GE_Tool
          GE_ViewModel.DeskViewModel.Instance.Phantom.SetGeometry(_curSegment);
       }
 
+      private PrimPoint calcFirstPoint(PrimPoint eventPos)
+      {
+         if (_isCtrlPressed)
+            return calcSnapPoint(eventPos);
+         return eventPos;
+      }
+
       private PrimPoint calcSecondPoint(PrimPoint eventPos)
       {
-         if (!_isShiftPressed)
-            return eventPos;
+         if (_isShiftPressed)
+            return calcStraightPoint(eventPos);
+         else if (_isCtrlPressed)
+            return calcSnapPoint(eventPos);
+         return eventPos;
+      }
 
-         var deltaX = System.Math.Abs(eventPos.X - _curSegment.Points[0].X);
-         var deltaY = System.Math.Abs(eventPos.Y - _curSegment.Points[0].Y);
+      private PrimPoint calcStraightPoint(PrimPoint eventPos)
+      {
+         double deltaX = System.Math.Abs(eventPos.X - _curSegment.Points[0].X);
+         double deltaY = System.Math.Abs(eventPos.Y - _curSegment.Points[0].Y);
 
          if (deltaX > deltaY)
             return new(eventPos.X, _curSegment.Points[0].Y);
          else
             return new(_curSegment.Points[0].X, eventPos.Y);
+      }
+
+      private PrimPoint calcSnapPoint(PrimPoint eventPos)
+      {
+         clearSnapPoint();
+
+         foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
+         {
+            GE_VMObject.SnapPoint snapPoint = obj.GetSnapPoint(eventPos);
+
+            if (snapPoint is null)
+               continue;
+            else if (_snapPoint is null || snapPoint.Coord.DistTo(eventPos) <= _snapPoint.Coord.DistTo(eventPos))
+               _snapPoint = snapPoint;
+         }
+
+         if (_snapPoint is not null)
+         {
+            _snapPoint.Activate();
+            return _snapPoint.Coord;
+         }
+         else
+         {
+            return eventPos;
+         }
+      }
+
+      private void clearSnapPoint()
+      {
+         _snapPoint?.DeActivate();
+         _snapPoint = null;
       }
    }
 }
