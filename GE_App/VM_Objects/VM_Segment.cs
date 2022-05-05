@@ -8,13 +8,11 @@ namespace GE_VMObject
 {
    class VM_Segment : VM_BaseObject
    {
-      public GE_GeomObject.Segment Segment => (GE_GeomObject.Segment)DeskViewModel.Instance.Model.Objects.ObjectsReadOnly.First(obj => obj.ID == _modelID);
-
-      private double _eps = 4;
+      public GE_GeomObject.Segment Segment => (GE_GeomObject.Segment)DeskViewModel.Instance.Model.Objects.ObjectsReadOnly.First(obj => obj.ID == ModelID);
 
       public VM_Segment(int id)
       {
-         _modelID = id;
+         ModelID = id;
          _mainBrush = (System.Windows.Media.SolidColorBrush)new System.Windows.Media.BrushConverter().ConvertFrom(Segment.Color);
       }
 
@@ -40,32 +38,16 @@ namespace GE_VMObject
       {
          List<SnapPoint> snapPoints = new();
 
-         //try snap to shape points
-         List<PrimPoint> shapePoints = GetAllScreenPoints();
-         foreach (PrimPoint shapePoint in shapePoints)
-         {
-            if (shapePoint.DistTo(point) <= _eps)
-               snapPoints.Add(new(shapePoint, SnapKind.Point));
-         }
-
-         //try snap to shape edge
+         snapPoints.AddRange(trySnapToShapePoints(point));
          if (snapPoints.Count == 0)
-         {
-            PrimPoint closestOnSeg = GE_Maths.GE_Math.ClosestPointOnSeg(point, shapePoints[0], shapePoints[1]);
-            if (point.DistTo(closestOnSeg) <= _eps)
-               snapPoints.Add(new(closestOnSeg, SnapKind.Segment));
-         }
+            snapPoints.AddRange(trySnapToCenter(point));
+         if (snapPoints.Count == 0)
+            snapPoints.AddRange(trySnapToShapeEdge(point));
 
          if (snapPoints.Count == 0)
             return null;
 
-         SnapPoint closestSnapPoint = snapPoints[0];
-
-         foreach (SnapPoint snapPoint in snapPoints)
-            if (snapPoint.Coord.DistTo(point) < closestSnapPoint.Coord.DistTo(point))
-               closestSnapPoint = snapPoint;
-
-         return closestSnapPoint;
+         return findClosestSnapPoint(snapPoints, point);
       }
 
       public override List<PrimPoint> GetAllScreenPoints()
@@ -112,6 +94,57 @@ namespace GE_VMObject
          segment.Y1 = p1.Y;
          segment.X2 = p2.X;
          segment.Y2 = p2.Y;
+      }
+
+      private List<SnapPoint> trySnapToShapePoints(PrimPoint point)
+      {
+         List<SnapPoint> snapPoints = new();
+
+         List<PrimPoint> shapePoints = GetAllScreenPoints();
+         foreach (PrimPoint shapePoint in shapePoints)
+         {
+            if (shapePoint.DistTo(point) <= GeoEditor.Constants.SnapDist)
+               snapPoints.Add(new(shapePoint, SnapKind.Point));
+         }
+
+         return snapPoints;
+      }
+
+      private List<SnapPoint> trySnapToCenter(PrimPoint point)
+      {
+         List<SnapPoint> snapPoints = new();
+
+         List<PrimPoint> shapePoints = GetAllScreenPoints();
+         if (snapPoints.Count == 0)
+         {
+            PrimPoint centerSnapPoint = new((shapePoints[0].X + shapePoints[1].X) / 2, (shapePoints[0].Y + shapePoints[1].Y) / 2);
+            if (centerSnapPoint.DistTo(point) <= GeoEditor.Constants.SnapDist)
+               snapPoints.Add(new(centerSnapPoint, SnapKind.Center));
+         }
+
+         return snapPoints;
+      }
+
+      private List<SnapPoint> trySnapToShapeEdge(PrimPoint point)
+      {
+         List<SnapPoint> snapPoints = new();
+         List<PrimPoint> shapePoints = GetAllScreenPoints();
+         PrimPoint closestOnSeg = GE_Maths.GE_Math.ClosestPointOnSeg(point, shapePoints[0], shapePoints[1]);
+         if (point.DistTo(closestOnSeg) <= GeoEditor.Constants.SnapDist)
+            snapPoints.Add(new(closestOnSeg, SnapKind.Line));
+
+         return snapPoints;
+      }
+
+      private SnapPoint findClosestSnapPoint(List<SnapPoint> snapPoints, PrimPoint point)
+      {
+         SnapPoint closestSnapPoint = snapPoints[0];
+
+         foreach (SnapPoint snapPoint in snapPoints)
+            if (snapPoint.Coord.DistTo(point) < closestSnapPoint.Coord.DistTo(point))
+               closestSnapPoint = snapPoint;
+
+         return closestSnapPoint;
       }
    }
 }

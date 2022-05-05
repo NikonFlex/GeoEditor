@@ -21,9 +21,18 @@ namespace GE_ViewModel
       {
          Screen = screen;
          Transformator = new(Screen.ActualWidth, Screen.ActualHeight);
-         Grid = new();
          Screen.Children.Add(Phantom.CreateView());
          Screen.Children.Add(SelectArea.CreateView());
+      }
+
+      public void ShowObject(int id)
+      {
+
+      }
+
+      public void HideObject(int id)
+      {
+
       }
 
       public void AddSegment(GE_Primitive.PrimPoint p1, GE_Primitive.PrimPoint p2)
@@ -33,9 +42,22 @@ namespace GE_ViewModel
          Screen.Children.Add(ObjectsViews.ObjectsReadOnly.Last().CreateView());
       }
 
-      public void AddKeyPoint(GE_VMObject.MovePoint keyPoint)
+      public GE_VMObject.SnapPoint GetSnapPoint(GE_Primitive.PrimPoint mousePos, GE_VMObject.VM_BaseObject moveObject = null)
       {
-         Screen.Children.Add(keyPoint.CreateView());
+         GE_VMObject.SnapPoint currentSnapPoint = null;
+         foreach (GE_VMObject.VM_BaseObject obj in ObjectsViews.ObjectsReadOnly)
+         {
+            if (obj == moveObject)
+               continue;
+
+            GE_VMObject.SnapPoint snapPoint = obj.GetSnapPoint(mousePos);
+
+            if (snapPoint is null)
+               continue;
+            else if (currentSnapPoint is null || snapPoint.Coord.DistTo(mousePos) <= currentSnapPoint.Coord.DistTo(mousePos))
+               currentSnapPoint = snapPoint;
+         }
+         return currentSnapPoint;
       }
 
       public void RefreshView()

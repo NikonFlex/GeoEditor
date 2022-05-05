@@ -39,8 +39,7 @@ namespace GE_Tool
       protected override void MouseDown(MouseButtonEventArgs e)
       {
          PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(GE_ViewModel.DeskViewModel.Instance.Screen));
-         reSelectMovePoints(screenEventPos);
-         deleteNotActivatedMovePoints();
+         start(screenEventPos);
       }
 
       protected override void MouseUp(MouseButtonEventArgs e)
@@ -64,11 +63,17 @@ namespace GE_Tool
                calcSnapPoint(movePoint, eventPos);
 
                if (_isCtrlPressed)
-                  movePoint.SetPoint(snapMove(eventPos));
-               else
                   movePoint.SetPoint(eventPos);
+               else
+                  movePoint.SetPoint(snapMove(eventPos));
             }
          }
+      }
+
+      private void start(PrimPoint screenEventPos)
+      {
+         reSelectMovePoints(screenEventPos);
+         deleteNotActivatedMovePoints();
       }
 
       private PrimPoint snapMove(PrimPoint eventPos)
@@ -141,25 +146,13 @@ namespace GE_Tool
             _movePoints.AddRange(obj.GetMovePoints());
 
          foreach (GE_VMObject.MovePoint keyPoint in _movePoints)
-            GE_ViewModel.DeskViewModel.Instance.AddKeyPoint(keyPoint);
+            GE_ViewModel.DeskViewModel.Instance.Screen.Children.Add(keyPoint.CreateView());
       }
 
       private void calcSnapPoint(GE_VMObject.MovePoint movePoint, PrimPoint eventPos)
       {
          clearSnapPoint();
-
-         foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
-         {
-            if (obj == movePoint.Object)
-               continue;
-
-            GE_VMObject.SnapPoint snapPoint = obj.GetSnapPoint(eventPos);
-
-            if (snapPoint is null)
-               continue;
-            else if (_snapPoint is null || snapPoint.Coord.DistTo(eventPos) <= _snapPoint.Coord.DistTo(eventPos))
-               _snapPoint = snapPoint;
-         }
+         _snapPoint = GE_ViewModel.DeskViewModel.Instance.GetSnapPoint(eventPos, movePoint.Object);
       }
 
       private void clearSnapPoint()

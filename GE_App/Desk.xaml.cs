@@ -17,7 +17,12 @@ namespace GeoEditor.Control
       public Desk()
       {
          InitializeComponent();
+         registerServices();
          Loaded += deskLoaded;
+      }
+
+      private void registerServices()
+      {
          ServicesContainer.Register<IEventService>(this);
       }
 

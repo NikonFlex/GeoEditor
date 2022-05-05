@@ -84,17 +84,18 @@ namespace GE_Tool
       private PrimPoint calcFirstPoint(PrimPoint eventPos)
       {
          if (_isCtrlPressed)
-            return calcSnapPoint(eventPos);
-         return eventPos;
+            return eventPos;
+         return calcSnapPoint(eventPos);
       }
 
       private PrimPoint calcSecondPoint(PrimPoint eventPos)
       {
+         clearSnapPoint();
          if (_isShiftPressed)
             return calcStraightPoint(eventPos);
          else if (_isCtrlPressed)
-            return calcSnapPoint(eventPos);
-         return eventPos;
+            return eventPos;
+         return calcSnapPoint(eventPos);
       }
 
       private PrimPoint calcStraightPoint(PrimPoint eventPos)
@@ -109,18 +110,9 @@ namespace GE_Tool
       }
 
       private PrimPoint calcSnapPoint(PrimPoint eventPos)
-      {
+      {            
          clearSnapPoint();
-
-         foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
-         {
-            GE_VMObject.SnapPoint snapPoint = obj.GetSnapPoint(eventPos);
-
-            if (snapPoint is null)
-               continue;
-            else if (_snapPoint is null || snapPoint.Coord.DistTo(eventPos) <= _snapPoint.Coord.DistTo(eventPos))
-               _snapPoint = snapPoint;
-         }
+         _snapPoint = GE_ViewModel.DeskViewModel.Instance.GetSnapPoint(eventPos);
 
          if (_snapPoint is not null)
          {

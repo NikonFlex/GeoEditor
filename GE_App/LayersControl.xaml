@@ -1,0 +1,52 @@
+﻿<UserControl x:Class="GeoEditor.Control.LayersControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GeoEditor"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" 
+             d:DesignWidth="300">
+    <Grid 
+        x:Name="MainRoot" 
+        Background="WhiteSmoke">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="30"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Rectangle 
+            Grid.Row="0" 
+            Fill="White" 
+            Stroke="Black"
+            Grid.ColumnSpan="3"/>
+        <Label 
+            Content="Layers"
+            Grid.Row="0"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Grid.ColumnSpan="3"
+            FontSize="20"/>
+        <StackPanel
+            x:Name="LayersList"
+            Background="Aqua"
+            Grid.ColumnSpan="3"
+            Grid.Row="1"/>
+        <Label
+            Content="Add layer"
+            Grid.Row="2"
+            VerticalAlignment="Center"/>
+        <Button
+            Height="30"
+            Grid.Row="3"
+            Grid.Column="1"
+            Click="AddLayerButtonClick"/>
+
+    </Grid>
+</UserControl>

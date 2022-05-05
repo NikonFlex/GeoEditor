@@ -84,5 +84,14 @@ namespace GeoEditor
          doCommand(GE_Command.CommandID.ZoomAll);
       }
 
+      private void SaveCommandButtonClick(object sender, RoutedEventArgs e)
+      {
+         JsonUtils.Write();
+      }
+
+      private void LoadCommandButtonClick(object sender, RoutedEventArgs e)
+      {
+
+      }
    }
 }

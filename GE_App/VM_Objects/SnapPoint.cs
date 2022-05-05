@@ -7,7 +7,9 @@ namespace GE_VMObject
    enum SnapKind
    {
       Point,
-      Segment
+      Line, 
+      Center,
+      Intersection
    }
 
    class SnapPoint
@@ -16,22 +18,23 @@ namespace GE_VMObject
       public PrimRect Rect { get; private set; } = new();
       public VM_BaseObject Object { get; private set; }
 
-      private double _radius = 11;
+      private double _radius = GeoEditor.Constants.SnapDist;
       private SnapKind _kind;
-      private SolidColorBrush _brush = (SolidColorBrush)new BrushConverter().ConvertFrom("#008000");
-      private System.Windows.UIElement _objectUI;
+      private List<System.Windows.UIElement> _objectUI = new();
+      private System.Windows.UIElement _textUI;
 
       public SnapPoint(PrimPoint coord, SnapKind kind)
       {
          Coord = coord;
-         Rect = new(new PrimPoint(Coord.X - _radius / 2, Coord.Y - _radius / 2), _radius, _radius);
+         Rect = new(new PrimPoint(Coord.X - _radius, Coord.Y - _radius), _radius * 2, _radius * 2);
          _kind = kind;
       }
 
       public void Activate()
       {
          createView();
-         GE_ViewModel.DeskViewModel.Instance.Screen.Children.Add(_objectUI);
+         _objectUI.ForEach(x => GE_ViewModel.DeskViewModel.Instance.Screen.Children.Add(x));
+         GE_ViewModel.DeskViewModel.Instance.Screen.Children.Add(_textUI);
       }
 
       public void DeActivate()
@@ -44,38 +47,31 @@ namespace GE_VMObject
          switch (_kind)
          {
             case SnapKind.Point:
-               createPointSnapView();
+               createSnapView(GeoEditor.Constants.SnapToPointColor, "point");
                break;
-            case SnapKind.Segment:
-               createSegmentSnapView();
+            case SnapKind.Line:
+               createSnapView(GeoEditor.Constants.SnapToLineColor, "line");
+               break;
+            case SnapKind.Center:
+               createSnapView(GeoEditor.Constants.SnapToCenterColor, "center");
+               break;
+            case SnapKind.Intersection:
+               createSnapView(GeoEditor.Constants.SnapToIntercectionColor, "intercection");
                break;
          }
       }
 
       private void deleteUI()
       {
-         GE_ViewModel.DeskViewModel.Instance.Screen.Children.Remove(_objectUI);
+         _objectUI.ForEach(x => GE_ViewModel.DeskViewModel.Instance.Screen.Children.Remove(x));
+         GE_ViewModel.DeskViewModel.Instance.Screen.Children.Remove(_textUI);
       }
 
-      private void createPointSnapView()
+      private void createSnapView(SolidColorBrush brush, string text)
       {
-         List<PrimPoint> pointsList = new();
-         pointsList.Add(new PrimPoint(Rect.Left, Rect.Bottom));
-         pointsList.Add(new PrimPoint(Rect.Left, Rect.Top));
-         pointsList.Add(new PrimPoint(Rect.Right, Rect.Top));
-         pointsList.Add(new PrimPoint(Rect.Right, Rect.Bottom));
-         _objectUI = GeoEditor.Utils.CreatePolygon(pointsList, 1.5, _brush);
-      }
-
-      private void createSegmentSnapView()
-      {
-         List<PrimPoint> pointsList = new();
-         pointsList.Add(new PrimPoint(Rect.Left, Rect.Bottom));
-         pointsList.Add(new PrimPoint(Rect.Right, Rect.Top));
-         
-         pointsList.Add(new PrimPoint(Rect.Left, Rect.Top));
-         pointsList.Add(new PrimPoint(Rect.Right, Rect.Bottom));
-         _objectUI = GeoEditor.Utils.CreatePolyline(pointsList, 1.5, _brush);
+         _objectUI.Add(GeoEditor.Utils.CreateSegmentView(new(Rect.Left, Rect.Top), new(Rect.Right, Rect.Bottom), 1, brush));
+         _objectUI.Add(GeoEditor.Utils.CreateSegmentView(new(Rect.Left, Rect.Bottom), new(Rect.Right, Rect.Top), 1, brush));
+         _textUI = GeoEditor.Utils.CreateTextBlock(new(Rect.Right, Rect.Top - 4 * _radius), text, GeoEditor.Constants.Black);
       }
    }
 }

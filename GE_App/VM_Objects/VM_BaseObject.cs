@@ -12,15 +12,12 @@ namespace GE_VMObject
 
    abstract class VM_BaseObject
    {
-      protected int _modelID;
       protected System.Windows.UIElement _objectUI;
-
       protected SolidColorBrush _mainBrush;
-      protected SolidColorBrush _hoveredBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#01befe");
-      protected SolidColorBrush _selectedBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#adff02");
-      
-      public int ModelID => _modelID;
 
+      public bool IsVisible { get; protected set; } = true;
+      public int ModelID { get; protected set; }
+      
       public void SetState(VMObjectState state)
       {
          System.Windows.Shapes.Shape shape = _objectUI as System.Windows.Shapes.Shape;
@@ -29,17 +26,26 @@ namespace GE_VMObject
             case VMObjectState.Selected:
                shape.Effect = new System.Windows.Media.Effects.DropShadowEffect { ShadowDepth = 0, 
                                                                                   Opacity = 5, 
-                                                                                  Color = _selectedBrush.Color };
+                                                                                  Color = GeoEditor.Constants.SelectedColor.Color };
                break;
             case VMObjectState.Hovered:
                shape.Effect = new System.Windows.Media.Effects.DropShadowEffect { ShadowDepth = 0, 
                                                                                   Opacity = 5, 
-                                                                                  Color = _hoveredBrush.Color };
+                                                                                  Color = GeoEditor.Constants.HoveredColor.Color };
                break;
             case VMObjectState.None:
                shape.Effect = null;
                break;
          }
+      }
+
+      public void SetVisible(bool isVisible)
+      {
+         IsVisible = isVisible;
+         if (isVisible)
+            _objectUI.Visibility = System.Windows.Visibility.Visible;
+         else
+            _objectUI.Visibility = System.Windows.Visibility.Hidden;
       }
 
       public abstract void SetPoint(GE_Primitive.PrimPoint newPoint, int pointIndex);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Controls;
 using GE_Primitive;
 
 namespace GeoEditor
@@ -17,9 +18,15 @@ namespace GeoEditor
          _objects.Add(newObject);
          return newObject.ID;
       }
+
       public void RemoveObjectWithID(int id)
       {
          _objects.RemoveAll(obj => obj.ID == id);
+      }
+
+      public GE_GeomObject.BaseObject FindObject(int id)
+      {
+         return _objects.Find(obj => obj.ID == id); 
       }
    }
 
@@ -38,6 +45,11 @@ namespace GeoEditor
       {
          GE_ViewModel.DeskViewModel.Instance.Model.RemoveObjectWithID(id);
          _objects.RemoveAll(view => view.ModelID == id);
+      }
+
+      public GE_VMObject.VM_BaseObject FindObject(int id)
+      {
+         return _objects.Find(obj => obj.ModelID == id);
       }
    }
 
@@ -92,14 +104,14 @@ namespace GeoEditor
 
       public static Polyline CreatePolyline(List<PrimPoint> pointsList, double thickness, SolidColorBrush brush)
       {
-         Polyline newPolygon = new();
+         Polyline newPolyline = new();
          foreach (PrimPoint point in pointsList)
-            newPolygon.Points.Add(new System.Windows.Point(point.X, point.Y));
+            newPolyline.Points.Add(new System.Windows.Point(point.X, point.Y));
 
-         newPolygon.Stroke = brush;
-         newPolygon.StrokeThickness = thickness;
-         newPolygon.IsHitTestVisible = false;
-         return newPolygon;
+         newPolyline.Stroke = brush;
+         newPolyline.StrokeThickness = thickness;
+         newPolyline.IsHitTestVisible = false;
+         return newPolyline;
       }
 
       public static List<PrimPoint> CreateRegularFigure(PrimPoint center, double radius, int step)
@@ -113,6 +125,17 @@ namespace GeoEditor
          }
 
          return circlePoints;
+      }
+
+      public static TextBlock CreateTextBlock(PrimPoint textPos, string text, SolidColorBrush textBrush, SolidColorBrush backgroundBrush = null)
+      {
+         TextBlock textBlock = new();
+         textBlock.Text = text;
+         textBlock.Foreground = textBrush;
+         textBlock.Background = backgroundBrush;
+         Canvas.SetLeft(textBlock, textPos.X);
+         Canvas.SetTop(textBlock, textPos.Y);
+         return textBlock;
       }
 
       public static bool IsBetween(double number, double left, double right)

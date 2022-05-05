@@ -30,20 +30,18 @@ namespace GE_VMObject
       }
 
       private SolidColorBrush _mainBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#8f00ff");
-      private SolidColorBrush _hoveredBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#01befe");
-      private SolidColorBrush _selectedBrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#adff02");
-
+     
       public void SetState(VMObjectState state)
       {
          System.Windows.Shapes.Shape shape = _objectUI as System.Windows.Shapes.Shape;
          switch (state)
          {
             case VMObjectState.Selected:
-               shape.Fill = _selectedBrush;
+               shape.Fill = GeoEditor.Constants.SelectedColor;
                IsActive = true;
                break;
             case VMObjectState.Hovered:
-               shape.Fill = _hoveredBrush;
+               shape.Fill = GeoEditor.Constants.HoveredColor;
                IsActive = false;
                break;
             case VMObjectState.None:
@@ -71,8 +69,8 @@ namespace GE_VMObject
 
       public System.Windows.UIElement CreateView()
       {
-         var pointsList = GeoEditor.Utils.CreateRegularFigure(Coord, Radius, 36); // hexagon
-         return _objectUI = GeoEditor.Utils.CreatePolygon(pointsList, 0.9, (SolidColorBrush)new BrushConverter().ConvertFrom("#000000"), _mainBrush);
+         var pointsList = GeoEditor.Utils.CreateRegularFigure(Coord, Radius, 36);
+         return _objectUI = GeoEditor.Utils.CreatePolygon(pointsList, 0.9, GeoEditor.Constants.Black, _mainBrush);
       }
 
       public void DeleteUI()
