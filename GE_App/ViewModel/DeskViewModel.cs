@@ -17,6 +17,8 @@ namespace GE_ViewModel
 
       private DeskViewModel() { }
 
+      public void AddObjectOnScreen(System.Windows.UIElement newObject) => Screen.Children.Add(newObject);
+
       public void SetScreen(System.Windows.Controls.Canvas screen)
       {
          Screen = screen;
@@ -24,17 +26,7 @@ namespace GE_ViewModel
          Screen.Children.Add(Phantom.CreateView());
          Screen.Children.Add(SelectArea.CreateView());
       }
-
-      public void ShowObject(int id)
-      {
-
-      }
-
-      public void HideObject(int id)
-      {
-
-      }
-
+      
       public void AddSegment(GE_Primitive.PrimPoint p1, GE_Primitive.PrimPoint p2)
       {
          int objID = Model.AddSegment(Transformator.ScreenToWorld(p1), Transformator.ScreenToWorld(p2));
@@ -64,6 +56,25 @@ namespace GE_ViewModel
       {
          foreach (GE_VMObject.VM_BaseObject view in ObjectsViews.ObjectsReadOnly)
             view.RefreshUI();
+      }
+
+      public void DeleteObject(int id)
+      {
+         ObjectsViews.FindObject(id).DeleteUI();
+         SelectedObjects.DeSelectObject(id);
+         ObjectsViews.RemoveObjectWithID(id);
+         Model.Objects.RemoveObjectWithID(id);
+      }
+
+      public void SelectObject(int id)
+      {
+         SelectedObjects.SelectObject(id);
+         ObjectsViews.FindObject(id).SetState(GE_VMObject.VMObjectState.Selected);
+      }
+      public void DeSelectObject(int id)
+      {
+         SelectedObjects.DeSelectObject(id);
+         ObjectsViews.FindObject(id).SetState(GE_VMObject.VMObjectState.None);
       }
    }
 }

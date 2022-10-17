@@ -9,6 +9,7 @@ namespace GeoEditor
 {
    class Constants
    {
+      public static int BorderShift = 20; //отступ от края экрана при програмном передвижении вида
       public static SolidColorBrush Black { get; private set; } = (SolidColorBrush)new BrushConverter().ConvertFrom("#000000");
       public static SolidColorBrush HoveredColor { get; private set; } = (SolidColorBrush)new BrushConverter().ConvertFrom("#01befe");
       public static SolidColorBrush SelectedColor { get; private set; } = (SolidColorBrush)new BrushConverter().ConvertFrom("#adff02");

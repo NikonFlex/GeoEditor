@@ -9,24 +9,16 @@ namespace GE_Command
 
       public override void DoCommand()
       {
-         int objectsCount = GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly.Count;
+         int objectsCount = VM.ObjectsViews.ObjectsReadOnly.Count;
          for (int i = objectsCount - 1; i >= 0; i--)
          {
-            GE_VMObject.VM_BaseObject obj = GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly.ElementAt(i);
+            GE_VMObject.VM_BaseObject obj = VM.ObjectsViews.ObjectsReadOnly.ElementAt(i);
 
-            if (!GE_ViewModel.DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID))
+            if (!VM.SelectedObjects.IsObjectSelected(obj.ModelID))
                continue;
 
-            deleteObject(obj);
+            VM.DeleteObject(obj.ModelID);
          }
-      }
-
-      private void deleteObject(GE_VMObject.VM_BaseObject obj)
-      {
-         obj.DeleteUI();
-         GE_ViewModel.DeskViewModel.Instance.SelectedObjects.DeSelectObject(obj.ModelID);
-         GE_ViewModel.DeskViewModel.Instance.ObjectsViews.RemoveObjectWithID(obj.ModelID);
-         GE_ViewModel.DeskViewModel.Instance.Model.Objects.RemoveObjectWithID(obj.ModelID);
       }
    }
 }

@@ -14,6 +14,7 @@ namespace GE_Model
 
       public GeoEditor.GE_ObjectsCollection Objects => _objects;
       public List<Layer> Layers => _layers;
+      public Layer CurrentLayer => _layers.Find(x => x.ID == _currentLayerID);
 
       public void DeleteLayer(int layerID)
       {
@@ -33,14 +34,14 @@ namespace GE_Model
          _highestObjectID++;
          GE_GeomObject.Segment newSeg = new(_highestObjectID, p1, p2);
          _objects.AddObject(newSeg);
-         _layers.Find(x => x.ID == _currentLayerID).AddObject(_highestObjectID);
+         CurrentLayer.AddObject(_highestObjectID);
          return _highestObjectID;
       }
 
       public void RemoveObjectWithID(int id)
       {
          _objects.RemoveObjectWithID(id);
-         _layers.Find(x => x.ID == _currentLayerID).RemoveObjectWithId(id);
+         CurrentLayer.RemoveObjectWithId(id);
       }
    }
 }

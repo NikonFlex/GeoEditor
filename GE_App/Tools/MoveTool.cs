@@ -28,7 +28,7 @@ namespace GE_Tool
 
       protected override void MouseMove(MouseEventArgs e)
       {
-         PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(GE_ViewModel.DeskViewModel.Instance.Screen));
+         PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(VM.Screen));
 
          if (e.LeftButton == MouseButtonState.Pressed)
             movePoints(screenEventPos);
@@ -38,13 +38,13 @@ namespace GE_Tool
 
       protected override void MouseDown(MouseButtonEventArgs e)
       {
-         PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(GE_ViewModel.DeskViewModel.Instance.Screen));
+         PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(VM.Screen));
          start(screenEventPos);
       }
 
       protected override void MouseUp(MouseButtonEventArgs e)
       {
-         PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(GE_ViewModel.DeskViewModel.Instance.Screen));
+         PrimPoint screenEventPos = PrimPoint.FromWindowsPoint(e.GetPosition(VM.Screen));
          finishMove(screenEventPos);
       }
 
@@ -142,17 +142,17 @@ namespace GE_Tool
       private void calcMovePoints()
       {
          _movePoints.Clear();
-         foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
+         foreach (GE_VMObject.VM_BaseObject obj in VM.ObjectsViews.ObjectsReadOnly)
             _movePoints.AddRange(obj.GetMovePoints());
 
          foreach (GE_VMObject.MovePoint keyPoint in _movePoints)
-            GE_ViewModel.DeskViewModel.Instance.Screen.Children.Add(keyPoint.CreateView());
+            VM.AddObjectOnScreen(keyPoint.CreateView());
       }
 
       private void calcSnapPoint(GE_VMObject.MovePoint movePoint, PrimPoint eventPos)
       {
          clearSnapPoint();
-         _snapPoint = GE_ViewModel.DeskViewModel.Instance.GetSnapPoint(eventPos, movePoint.Object);
+         _snapPoint = VM.GetSnapPoint(eventPos, movePoint.Object);
       }
 
       private void clearSnapPoint()

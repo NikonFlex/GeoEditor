@@ -77,7 +77,7 @@ namespace GE_VMObject
       {
          return _objectUI = GeoEditor.Utils.CreateSegmentView(DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(0)),
                                                               DeskViewModel.Instance.Transformator.WorldToScreen(Segment.GetPoint(1)),
-                                                              1.5, _mainBrush);
+                                                              Segment.Thickness, _mainBrush);
       }
 
       public override void DeleteUI()

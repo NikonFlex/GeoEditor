@@ -41,6 +41,7 @@ namespace GE_Tool
 
       public abstract ToolID ID { get; }
       public bool IsActive => _isActive;
+      protected GE_ViewModel.DeskViewModel VM => GE_ViewModel.DeskViewModel.Instance;
 
       public void OnActivate()
       {

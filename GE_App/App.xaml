@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:GeoEditor"
              StartupUri="View.xaml">
     <Application.Resources>
-        
+        <Cursor x:Key="CrossCursor">Resources\Cursors\Cross.cur</Cursor>
     </Application.Resources>
 </Application>

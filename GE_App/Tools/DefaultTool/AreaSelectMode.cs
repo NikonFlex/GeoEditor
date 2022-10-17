@@ -8,7 +8,6 @@ namespace GE_Tool
    class AreaSelectMode : DefaultToolMode
    {
       private bool _isOriginPointSet = false;
-      private bool _isCtrlPressed = false;
 
       public override void OnMouseMove(MouseEventArgs e)
       {
@@ -33,16 +32,6 @@ namespace GE_Tool
             return;
 
          finish();
-      }
-
-      public override void OnKeyDown(KeyEventArgs e)
-      {
-         _isCtrlPressed = e.Key == Key.LeftCtrl;
-      }
-
-      public override void OnKeyUp(KeyEventArgs e)
-      {
-         _isCtrlPressed = e.Key == Key.LeftCtrl;
       }
 
       private void start(PrimPoint screenEventPos)

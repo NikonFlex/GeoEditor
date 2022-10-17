@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:GeoEditor"
              mc:Ignorable="d" 
              d:DesignHeight="40" 
-             d:DesignWidth="250">
+             d:DesignWidth="250"
+             MouseDoubleClick="LayerViewControlDoubleCLick">
     <Grid
         x:Name="MainRoot"
         Background="BurlyWood">

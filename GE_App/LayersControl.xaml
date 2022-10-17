@@ -35,7 +35,7 @@
             FontSize="20"/>
         <StackPanel
             x:Name="LayersList"
-            Background="Aqua"
+            Background="White"
             Grid.ColumnSpan="3"
             Grid.Row="1"/>
         <Label
@@ -44,6 +44,7 @@
             VerticalAlignment="Center"/>
         <Button
             Height="30"
+            Width="30"
             Grid.Row="3"
             Grid.Column="1"
             Click="AddLayerButtonClick"/>

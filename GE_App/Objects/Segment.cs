@@ -9,14 +9,7 @@
          ID = id;
       }
 
-      public override void SetPoint(GE_Primitive.PrimPoint newPoint, int pointIndex)
-      {
-         _prim.Points[pointIndex] = newPoint;
-      }
-
-      public override GE_Primitive.PrimPoint GetPoint(int pointIndex)
-      {
-         return _prim.Points[pointIndex];
-      }
+      public override void SetPoint(GE_Primitive.PrimPoint newPoint, int pointIndex) => _prim.Points[pointIndex] = newPoint;
+      public override GE_Primitive.PrimPoint GetPoint(int pointIndex) => _prim.Points[pointIndex];
    }
 }

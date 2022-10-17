@@ -7,12 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Cross.cur" />
+    <None Remove="Resources\Cursors\Cross.cur" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\Fonts\" />
+    <Resource Include="Resources\Cross.cur" />
+    <Resource Include="Resources\Cursors\Cross.cur" />
   </ItemGroup>
 
 </Project>

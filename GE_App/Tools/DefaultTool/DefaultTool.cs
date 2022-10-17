@@ -20,13 +20,18 @@ namespace GE_Tool
 
       protected override void MouseDown(MouseButtonEventArgs e)
       {
-         if (e.ChangedButton == MouseButton.Left)
-            _activeMode = new AreaSelectMode();
-         else if (e.ChangedButton == MouseButton.Right)
-            _activeMode = new PickSelectMode();
-         else if (e.ChangedButton == MouseButton.Middle)
-            _activeMode = new MoveViewMode();
-
+         switch (e.ChangedButton)
+         {
+            case MouseButton.Left:
+               _activeMode = new AreaSelectMode();
+               break;
+            case MouseButton.Right:
+               _activeMode = new PickSelectMode();
+               break;
+            case MouseButton.Middle:
+               _activeMode = new MoveViewMode();
+               break;
+         }
          _activeMode.OnMouseDown(e);
       }
 
@@ -43,14 +48,7 @@ namespace GE_Tool
          _activeMode = new PickSelectMode();
       }
 
-      protected override void KeyDown(KeyEventArgs e)
-      {
-         _activeMode.OnKeyDown(e);
-      }
-
-      protected override void KeyUp(KeyEventArgs e)
-      {
-         _activeMode.OnKeyUp(e);
-      }
+      protected override void KeyDown(KeyEventArgs e) => _activeMode.OnKeyDown(e);
+      protected override void KeyUp(KeyEventArgs e) => _activeMode.OnKeyUp(e);
    }
 }

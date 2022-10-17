@@ -69,5 +69,10 @@ namespace GeoEditor.Control
             _showObjects = false;
          }
       }
+
+      private void LayerViewControlDoubleCLick(object sender, MouseButtonEventArgs e)
+      {
+
+      }
    }
 }

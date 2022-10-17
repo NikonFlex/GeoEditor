@@ -11,19 +11,19 @@ namespace GE_Command
       {
          GE_Maths.BoundRect bRect = new();
 
-         bool _zoomOnSelected = GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly.
-                                Any(obj => GE_ViewModel.DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID));
+         bool _zoomOnSelected = VM.ObjectsViews.ObjectsReadOnly.
+                                Any(obj => VM.SelectedObjects.IsObjectSelected(obj.ModelID));
 
-         foreach (GE_VMObject.VM_BaseObject obj in GE_ViewModel.DeskViewModel.Instance.ObjectsViews.ObjectsReadOnly)
+         foreach (GE_VMObject.VM_BaseObject obj in VM.ObjectsViews.ObjectsReadOnly)
          {
-            if (_zoomOnSelected && !GE_ViewModel.DeskViewModel.Instance.SelectedObjects.IsObjectSelected(obj.ModelID))
+            if (_zoomOnSelected && !VM.SelectedObjects.IsObjectSelected(obj.ModelID))
                continue;
 
             obj.GetAllWorldPoints().ForEach(point => bRect.AddPoint(point));
          }
 
-         GE_ViewModel.DeskViewModel.Instance.Transformator.SetTransformatorFromBoundRect(bRect);
-         GE_ViewModel.DeskViewModel.Instance.RefreshView();
+         VM.Transformator.SetTransformatorFromBoundRect(bRect);
+         VM.RefreshView();
       }
    }
 }

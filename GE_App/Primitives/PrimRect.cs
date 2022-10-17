@@ -38,6 +38,11 @@
          _height = newHeight;
       }
 
+      public void FitPoint(PrimPoint newPoint)
+      {
+
+      }
+
       public bool IsInside(PrimPoint point)
       {
          return Left <= point.X && point.X <= Right && Top <= point.Y && point.Y <= Bottom;
